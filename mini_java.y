@@ -2,55 +2,102 @@
 import java.io.*;
 %}
 
-//mudar a partir daqui
-
-%token IF, WHILE, ELSE, INT, DOUBLE, BOOLEAN, AND, IDENT, NUM
+%token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, SYSTEM.OUT.PRINTLN, IDENTIFIER, INTEGERLITERAL, LENGTH, TRUE, FALSE, NEW, THIS
 
 %right '='
-%nonassoc '>'
-%left AND
+%nonassoc '<'
+%left '&&'
 %left '-' '+'
-%left '/' '*'
+%left '*'
 
 %%
 
-Prog: Decl Bloco
+Goal: MainClass ClassDeclaretionRepetition
 ;
 
-Decl: Tipo LId ';' Decl
+MainClass: CLASS Identifier '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
+;
+
+ClassDeclaretionRepetition: ClassDeclaretionRepetition ClassDeclaretion
 |
 ;
 
-Tipo: INT
-| DOUBLE
+ClassDeclaretion: CLASS Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' 
+;
+
+ExtendID: EXTENDS Identifier 
+|
+;
+
+VarDeclaretionRepetition: VarDeclaretionRepetition VarDeclaretion
+|
+;
+
+MethodDeclarationRepetition: MethodDeclarationRepetition MethodDeclaration
+|
+;
+
+VarDeclaretion: Type Identifier ';'
+;
+
+MethodDeclaration: PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'
+;
+
+DeclarationTypes: Type Identifier DeclarationTypesRepetition
+|
+;
+
+DeclarationTypesRepetition: ',' Type Identifier DeclarationTypesRepetition
+|
+;
+
+StatementRepetition: StatementRepetition Statement
+|
+;
+
+Type: INT '[' ']'
 | BOOLEAN
+| INT
+| Identifier
 ;
 
-LId: LId ',' IDENT
-| IDENT
+Statement: '{' StatementRepetition '}'
+| IF '(' Expression ')' Statement ELSE Statement
+| WHILE '(' Expression ')' Statement
+| SYSTEM.OUT.PRINTLN '(' Expression ')' ';'
+| Identifier '=' Expression ';'
+| Identifier '[' Expression ']' '=' Expression ';'
 ;
 
-Bloco: '{' LCmd '}'
+Expression: Expression Operator Expression
+| Expression '[' Expression ']'
+| Expression '.' LENGTH
+| Expression '.' Identifier '(' ExpressionDeclaration ')'
+| INTEGERLITERAL
+| TRUE
+| FALSE
+| Identifier
+| THIS
+| NEW INT '[' Expression ']'
+| NEW Identifier '(' ')'
+| '!' Expression
+| '(' Expression ')'
 ;
 
-LCmd: LCmd Cmd
+ExpressionDeclaration: Expression ExpressionRepetition
 |
 ;
 
-Cmd: Bloco
-| IF '(' E ')' Cmd
-| IF '(' E ')' Cmd ELSE Cmd
-| WHILE '(' E ')' Cmd
-| E ';'
+ExpressionRepetition: Expression ',' ExpressionRepetition
+|
 ;
 
-E: E '=' E
-| E '+' E
-| E '*' E
-| E '/' E
-| E '>' E
-| E AND E
-| NUM
-| IDENT
-| '(' E ')'
+Operator: '&&'
+| '<'
+| '+'
+| '-'
+| '*'
+;
+
+Identifier: IDENTIFIER
 ;
