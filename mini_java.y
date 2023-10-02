@@ -72,7 +72,8 @@ Statement: '{' StatementRepetition '}'
 Expression: Expression Operator Expression
 | Expression '[' Expression ']'
 | Expression '.' LENGTH
-| Expression '.' Identifier '(' ExpressionDeclaration ')'
+| Expression '.' Identifier '(' ')'
+| Expression '.' Identifier '(' ExpressionRepetition ')'
 | INTEGERLITERAL
 | TRUE
 | FALSE
@@ -84,12 +85,8 @@ Expression: Expression Operator Expression
 | '(' Expression ')'
 ;
 
-ExpressionDeclaration: Expression ExpressionRepetition
-|
-;
-
-ExpressionRepetition: Expression ',' ExpressionRepetition
-|
+ExpressionRepetition: ExpressionRepetition ',' Expression
+| Expression
 ;
 
 Operator: '&&'
