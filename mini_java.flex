@@ -1,9 +1,9 @@
 %%
 
 %{
-  private AsdrSample yyparser;
+  private Parser yyparser;
 
-  public Yylex(java.io.Reader r, AsdrSample yyparser) {
+  public Yylex(java.io.Reader r, Parser yyparser) {
     this(r);
     this.yyparser = yyparser;
   }
