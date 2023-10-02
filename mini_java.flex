@@ -32,7 +32,6 @@ public static int RETURN = 276;
 public static int PRINT = 277;
 public static int STRING = 278;
 public static int COMMENT = 279;
-public static int CMDO = 280;
 
 
 %} 
@@ -72,7 +71,6 @@ extends   {return EXTENDS;}
 return    {return RETURN;}
 System.out.println  {return PRINT;}
 String    {return STRING;}
-cmdo {return CMDO;}
 
 
 {LETTER}({LETTER}|{DIGIT}|_)* {return IDENT;}

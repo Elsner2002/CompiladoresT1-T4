@@ -2,7 +2,7 @@
 import java.io.*;
 %}
 
-%token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, SYSTEM.OUT.PRINTLN, IDENTIFIER, INTEGERLITERAL, LENGTH, TRUE, FALSE, NEW, THIS
+%token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENTIFIER, INTEGERLITERAL, LENGTH, TRUE, FALSE, NEW, THIS
 
 %right '='
 %nonassoc '<'
@@ -64,7 +64,7 @@ Type: INT '[' ']'
 Statement: '{' StatementRepetition '}'
 | IF '(' Expression ')' Statement ELSE Statement
 | WHILE '(' Expression ')' Statement
-| SYSTEM.OUT.PRINTLN '(' Expression ')' ';'
+| PRINT '(' Expression ')' ';'
 | Identifier '=' Expression ';'
 | Identifier '[' Expression ']' '=' Expression ';'
 ;
