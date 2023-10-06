@@ -2,7 +2,7 @@
 import java.io.*;
 %}
 
-%token <dval> CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENTIFIER, INTEGERLITERAL, LENGTH, TRUE, FALSE, NEW, THIS
+%token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENTIFIER, INTEGERLITERAL, LENGTH, TRUE, FALSE, NEW, THIS
 
 %right '='
 %nonassoc '<'
@@ -13,74 +13,81 @@ import java.io.*;
 %%
 
 Goal: MainClass ClassDeclaretionRepetition
+| MainClass
 ;
 
-MainClass: CLASS Identifier '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
+MainClass: CLASS IDENTIFIER '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
 ;
 
 ClassDeclaretionRepetition: ClassDeclaretionRepetition ClassDeclaretion
-|
 ;
 
-ClassDeclaretion: CLASS Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' 
-;
-
-ExtendID: EXTENDS Identifier 
-|
+ClassDeclaretion: CLASS IDENTIFIER EXTENDS IDENTIFIER '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' 
+| CLASS IDENTIFIER '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' 
+| CLASS IDENTIFIER EXTENDS IDENTIFIER '{' MethodDeclarationRepetition '}' 
+| CLASS IDENTIFIER '{' MethodDeclarationRepetition '}' 
+| CLASS IDENTIFIER EXTENDS IDENTIFIER '{' VarDeclaretionRepetition '}' 
+| CLASS IDENTIFIER '{' VarDeclaretionRepetition '}' 
+| CLASS IDENTIFIER EXTENDS IDENTIFIER '{' '}' 
+| CLASS IDENTIFIER '{' '}' 
 ;
 
 VarDeclaretionRepetition: VarDeclaretionRepetition VarDeclaretion
-|
+| VarDeclaretion
 ;
 
 MethodDeclarationRepetition: MethodDeclarationRepetition MethodDeclaration
-|
+| MethodDeclaration
 ;
 
-VarDeclaretion: Type Identifier ';'
+VarDeclaretion: Type IDENTIFIER ';'
 ;
 
-MethodDeclaration: PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'
+MethodDeclaration: PUBLIC Type IDENTIFIER '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' ')' '{' VarDeclaretionRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' DeclarationTypesRepetition ')' '{' RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' ')' '{' StatementRepetition RETURN Expression ';' '}'
+| PUBLIC Type IDENTIFIER '(' ')' '{' RETURN Expression ';' '}'
 ;
 
-DeclarationTypes: Type Identifier DeclarationTypesRepetition
-|
-;
-
-DeclarationTypesRepetition: ',' Type Identifier DeclarationTypesRepetition
-|
+DeclarationTypesRepetition: Type IDENTIFIER ',' DeclarationTypesRepetition
+| Type IDENTIFIER
 ;
 
 StatementRepetition: StatementRepetition Statement
-|
+| Statement
 ;
 
 Type: INT '[' ']'
 | BOOLEAN
 | INT
-| Identifier
+| IDENTIFIER
 ;
 
 Statement: '{' StatementRepetition '}'
+| '{' '}'
 | IF '(' Expression ')' Statement ELSE Statement
 | WHILE '(' Expression ')' Statement
 | PRINT '(' Expression ')' ';'
-| Identifier '=' Expression ';'
-| Identifier '[' Expression ']' '=' Expression ';'
+| IDENTIFIER '=' Expression ';'
+| IDENTIFIER '[' Expression ']' '=' Expression ';'
 ;
 
 Expression: Expression Operator Expression
 | Expression '[' Expression ']'
 | Expression '.' LENGTH
-| Expression '.' Identifier '(' ')'
-| Expression '.' Identifier '(' ExpressionRepetition ')'
+| Expression '.' IDENTIFIER '(' ')'
+| Expression '.' IDENTIFIER '(' ExpressionRepetition ')'
 | INTEGERLITERAL
 | TRUE
 | FALSE
-| Identifier
+| IDENTIFIER
 | THIS
 | NEW INT '[' Expression ']'
-| NEW Identifier '(' ')'
+| NEW IDENTIFIER '(' ')'
 | '!' Expression
 | '(' Expression ')'
 ;
@@ -94,9 +101,6 @@ Operator: '&&'
 | '+'
 | '-'
 | '*'
-;
-
-Identifier: IDENTIFIER
 ;
 
 %%
