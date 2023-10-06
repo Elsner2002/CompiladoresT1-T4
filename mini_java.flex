@@ -1,5 +1,7 @@
 %%
 
+%byaccj
+
 %{
   private Parser yyparser;
 

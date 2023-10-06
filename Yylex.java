@@ -349,7 +349,6 @@ class Yylex {
   private boolean zzAtBOL = true;
 
   /** Whether the user-EOF-code has already been executed. */
-  @SuppressWarnings("unused")
   private boolean zzEOFDone;
 
   /* user code: */
@@ -631,6 +630,18 @@ public static int COMMENT = 279;
   }
 
 
+  /**
+   * Contains user EOF-code, which will be executed exactly once,
+   * when the end of file is reached
+   */
+  private void zzDoEOF() throws java.io.IOException {
+    if (!zzEOFDone) {
+      zzEOFDone = true;
+    
+  yyclose();    }
+  }
+
+
 
 
   /**
@@ -774,7 +785,8 @@ public static int COMMENT = 279;
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
-        return YYEOF;
+            zzDoEOF();
+          { return 0; }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
