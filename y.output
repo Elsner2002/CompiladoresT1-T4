@@ -1,0 +1,1458 @@
+   0  $accept : Goal $end
+
+   1  Goal : MainClass ClassDeclaretionRepetition
+
+   2  MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
+
+   3  ClassDeclaretionRepetition : ClassDeclaretionRepetition ClassDeclaretion
+   4                             |
+
+   5  ClassDeclaretion : CLASS Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}'
+
+   6  ExtendID : EXTENDS Identifier
+   7           |
+
+   8  VarDeclaretionRepetition : VarDeclaretionRepetition VarDeclaretion
+   9                           |
+
+  10  MethodDeclarationRepetition : MethodDeclarationRepetition MethodDeclaration
+  11                              |
+
+  12  VarDeclaretion : Type Identifier ';'
+
+  13  MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'
+
+  14  DeclarationTypes : Type Identifier DeclarationTypesRepetition
+  15                   |
+
+  16  DeclarationTypesRepetition : ',' Type Identifier DeclarationTypesRepetition
+  17                             |
+
+  18  StatementRepetition : StatementRepetition Statement
+  19                      |
+
+  20  Type : INT '[' ']'
+  21       | BOOLEAN
+  22       | INT
+  23       | Identifier
+
+  24  Statement : '{' StatementRepetition '}'
+  25            | IF '(' Expression ')' Statement ELSE Statement
+  26            | WHILE '(' Expression ')' Statement
+  27            | PRINT '(' Expression ')' ';'
+  28            | Identifier '=' Expression ';'
+  29            | Identifier '[' Expression ']' '=' Expression ';'
+
+  30  Expression : Expression Operator Expression
+  31             | Expression '[' Expression ']'
+  32             | Expression '.' LENGTH
+  33             | Expression '.' Identifier '(' ')'
+  34             | Expression '.' Identifier '(' ExpressionRepetition ')'
+  35             | INTEGERLITERAL
+  36             | TRUE
+  37             | FALSE
+  38             | Identifier
+  39             | THIS
+  40             | NEW INT '[' Expression ']'
+  41             | NEW Identifier '(' ')'
+  42             | '!' Expression
+  43             | '(' Expression ')'
+
+  44  ExpressionRepetition : ExpressionRepetition ',' Expression
+  45                       | Expression
+
+  46  Operator : "&&"
+  47           | '<'
+  48           | '+'
+  49           | '-'
+  50           | '*'
+
+  51  Identifier : IDENTIFIER
+
+state 0
+	$accept : . Goal $end  (0)
+
+	CLASS  shift 1
+	.  error
+
+	Goal  goto 2
+	MainClass  goto 3
+
+
+state 1
+	MainClass : CLASS . Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 5
+
+
+state 2
+	$accept : Goal . $end  (0)
+
+	$end  accept
+
+
+state 3
+	Goal : MainClass . ClassDeclaretionRepetition  (1)
+	ClassDeclaretionRepetition : .  (4)
+
+	.  reduce 4
+
+	ClassDeclaretionRepetition  goto 6
+
+
+state 4
+	Identifier : IDENTIFIER .  (51)
+
+	.  reduce 51
+
+
+state 5
+	MainClass : CLASS Identifier . '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	'{'  shift 7
+	.  error
+
+
+state 6
+	Goal : MainClass ClassDeclaretionRepetition .  (1)
+	ClassDeclaretionRepetition : ClassDeclaretionRepetition . ClassDeclaretion  (3)
+
+	CLASS  shift 8
+	$end  reduce 1
+
+	ClassDeclaretion  goto 9
+
+
+state 7
+	MainClass : CLASS Identifier '{' . PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	PUBLIC  shift 10
+	.  error
+
+
+state 8
+	ClassDeclaretion : CLASS . Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}'  (5)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 11
+
+
+state 9
+	ClassDeclaretionRepetition : ClassDeclaretionRepetition ClassDeclaretion .  (3)
+
+	.  reduce 3
+
+
+state 10
+	MainClass : CLASS Identifier '{' PUBLIC . STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	STATIC  shift 12
+	.  error
+
+
+state 11
+	ClassDeclaretion : CLASS Identifier . ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}'  (5)
+	ExtendID : .  (7)
+
+	EXTENDS  shift 13
+	'{'  reduce 7
+
+	ExtendID  goto 14
+
+
+state 12
+	MainClass : CLASS Identifier '{' PUBLIC STATIC . VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	VOID  shift 15
+	.  error
+
+
+state 13
+	ExtendID : EXTENDS . Identifier  (6)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 16
+
+
+state 14
+	ClassDeclaretion : CLASS Identifier ExtendID . '{' VarDeclaretionRepetition MethodDeclarationRepetition '}'  (5)
+
+	'{'  shift 17
+	.  error
+
+
+state 15
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID . MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	MAIN  shift 18
+	.  error
+
+
+state 16
+	ExtendID : EXTENDS Identifier .  (6)
+
+	.  reduce 6
+
+
+state 17
+	ClassDeclaretion : CLASS Identifier ExtendID '{' . VarDeclaretionRepetition MethodDeclarationRepetition '}'  (5)
+	VarDeclaretionRepetition : .  (9)
+
+	.  reduce 9
+
+	VarDeclaretionRepetition  goto 19
+
+
+state 18
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN . '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	'('  shift 20
+	.  error
+
+
+state 19
+	ClassDeclaretion : CLASS Identifier ExtendID '{' VarDeclaretionRepetition . MethodDeclarationRepetition '}'  (5)
+	VarDeclaretionRepetition : VarDeclaretionRepetition . VarDeclaretion  (8)
+	MethodDeclarationRepetition : .  (11)
+
+	BOOLEAN  shift 21
+	INT  shift 22
+	IDENTIFIER  shift 4
+	PUBLIC  reduce 11
+	'}'  reduce 11
+
+	Identifier  goto 23
+	MethodDeclarationRepetition  goto 24
+	VarDeclaretion  goto 25
+	Type  goto 26
+
+
+state 20
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' . STRING '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	STRING  shift 27
+	.  error
+
+
+state 21
+	Type : BOOLEAN .  (21)
+
+	.  reduce 21
+
+
+state 22
+	Type : INT . '[' ']'  (20)
+	Type : INT .  (22)
+
+	'['  shift 28
+	IDENTIFIER  reduce 22
+
+
+state 23
+	Type : Identifier .  (23)
+
+	.  reduce 23
+
+
+state 24
+	ClassDeclaretion : CLASS Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition . '}'  (5)
+	MethodDeclarationRepetition : MethodDeclarationRepetition . MethodDeclaration  (10)
+
+	PUBLIC  shift 29
+	'}'  shift 30
+	.  error
+
+	MethodDeclaration  goto 31
+
+
+state 25
+	VarDeclaretionRepetition : VarDeclaretionRepetition VarDeclaretion .  (8)
+
+	.  reduce 8
+
+
+state 26
+	VarDeclaretion : Type . Identifier ';'  (12)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 32
+
+
+state 27
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING . '[' ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	'['  shift 33
+	.  error
+
+
+state 28
+	Type : INT '[' . ']'  (20)
+
+	']'  shift 34
+	.  error
+
+
+state 29
+	MethodDeclaration : PUBLIC . Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+
+	BOOLEAN  shift 21
+	INT  shift 22
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 23
+	Type  goto 35
+
+
+state 30
+	ClassDeclaretion : CLASS Identifier ExtendID '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' .  (5)
+
+	.  reduce 5
+
+
+state 31
+	MethodDeclarationRepetition : MethodDeclarationRepetition MethodDeclaration .  (10)
+
+	.  reduce 10
+
+
+state 32
+	VarDeclaretion : Type Identifier . ';'  (12)
+
+	';'  shift 36
+	.  error
+
+
+state 33
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' . ']' Identifier ')' '{' Statement '}' '}'  (2)
+
+	']'  shift 37
+	.  error
+
+
+state 34
+	Type : INT '[' ']' .  (20)
+
+	.  reduce 20
+
+
+state 35
+	MethodDeclaration : PUBLIC Type . Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 38
+
+
+state 36
+	VarDeclaretion : Type Identifier ';' .  (12)
+
+	.  reduce 12
+
+
+state 37
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' . Identifier ')' '{' Statement '}' '}'  (2)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 39
+
+
+state 38
+	MethodDeclaration : PUBLIC Type Identifier . '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+
+	'('  shift 40
+	.  error
+
+
+state 39
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier . ')' '{' Statement '}' '}'  (2)
+
+	')'  shift 41
+	.  error
+
+
+state 40
+	MethodDeclaration : PUBLIC Type Identifier '(' . DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+	DeclarationTypes : .  (15)
+
+	BOOLEAN  shift 21
+	INT  shift 22
+	IDENTIFIER  shift 4
+	')'  reduce 15
+
+	Identifier  goto 23
+	Type  goto 42
+	DeclarationTypes  goto 43
+
+
+state 41
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' . '{' Statement '}' '}'  (2)
+
+	'{'  shift 44
+	.  error
+
+
+state 42
+	DeclarationTypes : Type . Identifier DeclarationTypesRepetition  (14)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 45
+
+
+state 43
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes . ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+
+	')'  shift 46
+	.  error
+
+
+state 44
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' . Statement '}' '}'  (2)
+
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 52
+
+
+state 45
+	DeclarationTypes : Type Identifier . DeclarationTypesRepetition  (14)
+	DeclarationTypesRepetition : .  (17)
+
+	','  shift 53
+	')'  reduce 17
+
+	DeclarationTypesRepetition  goto 54
+
+
+state 46
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' . '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+
+	'{'  shift 55
+	.  error
+
+
+state 47
+	Statement : IF . '(' Expression ')' Statement ELSE Statement  (25)
+
+	'('  shift 56
+	.  error
+
+
+state 48
+	Statement : WHILE . '(' Expression ')' Statement  (26)
+
+	'('  shift 57
+	.  error
+
+
+state 49
+	Statement : PRINT . '(' Expression ')' ';'  (27)
+
+	'('  shift 58
+	.  error
+
+
+state 50
+	Statement : '{' . StatementRepetition '}'  (24)
+	StatementRepetition : .  (19)
+
+	.  reduce 19
+
+	StatementRepetition  goto 59
+
+
+state 51
+	Statement : Identifier . '=' Expression ';'  (28)
+	Statement : Identifier . '[' Expression ']' '=' Expression ';'  (29)
+
+	'='  shift 60
+	'['  shift 61
+	.  error
+
+
+state 52
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement . '}' '}'  (2)
+
+	'}'  shift 62
+	.  error
+
+
+state 53
+	DeclarationTypesRepetition : ',' . Type Identifier DeclarationTypesRepetition  (16)
+
+	BOOLEAN  shift 21
+	INT  shift 22
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 23
+	Type  goto 63
+
+
+state 54
+	DeclarationTypes : Type Identifier DeclarationTypesRepetition .  (14)
+
+	.  reduce 14
+
+
+state 55
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' . VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (13)
+	VarDeclaretionRepetition : .  (9)
+
+	.  reduce 9
+
+	VarDeclaretionRepetition  goto 64
+
+
+state 56
+	Statement : IF '(' . Expression ')' Statement ELSE Statement  (25)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 73
+
+
+state 57
+	Statement : WHILE '(' . Expression ')' Statement  (26)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 74
+
+
+state 58
+	Statement : PRINT '(' . Expression ')' ';'  (27)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 75
+
+
+state 59
+	StatementRepetition : StatementRepetition . Statement  (18)
+	Statement : '{' StatementRepetition . '}'  (24)
+
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	'}'  shift 76
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 77
+
+
+state 60
+	Statement : Identifier '=' . Expression ';'  (28)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 78
+
+
+state 61
+	Statement : Identifier '[' . Expression ']' '=' Expression ';'  (29)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 79
+
+
+state 62
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' . '}'  (2)
+
+	'}'  shift 80
+	.  error
+
+
+state 63
+	DeclarationTypesRepetition : ',' Type . Identifier DeclarationTypesRepetition  (16)
+
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 81
+
+
+64: shift/reduce conflict (shift 4, reduce 19) on IDENTIFIER
+state 64
+	VarDeclaretionRepetition : VarDeclaretionRepetition . VarDeclaretion  (8)
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition . StatementRepetition RETURN Expression ';' '}'  (13)
+	StatementRepetition : .  (19)
+
+	BOOLEAN  shift 21
+	INT  shift 22
+	IDENTIFIER  shift 4
+	RETURN  reduce 19
+	IF  reduce 19
+	WHILE  reduce 19
+	PRINT  reduce 19
+	'{'  reduce 19
+
+	Identifier  goto 23
+	VarDeclaretion  goto 25
+	Type  goto 26
+	StatementRepetition  goto 82
+
+
+state 65
+	Expression : INTEGERLITERAL .  (35)
+
+	.  reduce 35
+
+
+state 66
+	Expression : TRUE .  (36)
+
+	.  reduce 36
+
+
+state 67
+	Expression : FALSE .  (37)
+
+	.  reduce 37
+
+
+state 68
+	Expression : NEW . INT '[' Expression ']'  (40)
+	Expression : NEW . Identifier '(' ')'  (41)
+
+	INT  shift 83
+	IDENTIFIER  shift 4
+	.  error
+
+	Identifier  goto 84
+
+
+state 69
+	Expression : THIS .  (39)
+
+	.  reduce 39
+
+
+state 70
+	Expression : '(' . Expression ')'  (43)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 85
+
+
+state 71
+	Expression : '!' . Expression  (42)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 86
+
+
+state 72
+	Expression : Identifier .  (38)
+
+	.  reduce 38
+
+
+state 73
+	Statement : IF '(' Expression . ')' Statement ELSE Statement  (25)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	')'  shift 93
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 74
+	Statement : WHILE '(' Expression . ')' Statement  (26)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	')'  shift 96
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 75
+	Statement : PRINT '(' Expression . ')' ';'  (27)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	')'  shift 97
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 76
+	Statement : '{' StatementRepetition '}' .  (24)
+
+	.  reduce 24
+
+
+state 77
+	StatementRepetition : StatementRepetition Statement .  (18)
+
+	.  reduce 18
+
+
+state 78
+	Statement : Identifier '=' Expression . ';'  (28)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	';'  shift 98
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 79
+	Statement : Identifier '[' Expression . ']' '=' Expression ';'  (29)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	']'  shift 99
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 80
+	MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}' .  (2)
+
+	.  reduce 2
+
+
+state 81
+	DeclarationTypesRepetition : ',' Type Identifier . DeclarationTypesRepetition  (16)
+	DeclarationTypesRepetition : .  (17)
+
+	','  shift 53
+	')'  reduce 17
+
+	DeclarationTypesRepetition  goto 100
+
+
+state 82
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition . RETURN Expression ';' '}'  (13)
+	StatementRepetition : StatementRepetition . Statement  (18)
+
+	RETURN  shift 101
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 77
+
+
+state 83
+	Expression : NEW INT . '[' Expression ']'  (40)
+
+	'['  shift 102
+	.  error
+
+
+state 84
+	Expression : NEW Identifier . '(' ')'  (41)
+
+	'('  shift 103
+	.  error
+
+
+state 85
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+	Expression : '(' Expression . ')'  (43)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	')'  shift 104
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+86: shift/reduce conflict (shift 87, reduce 42) on '<'
+86: shift/reduce conflict (shift 88, reduce 42) on "&&"
+86: shift/reduce conflict (shift 89, reduce 42) on '-'
+86: shift/reduce conflict (shift 90, reduce 42) on '+'
+86: shift/reduce conflict (shift 91, reduce 42) on '*'
+86: shift/reduce conflict (shift 92, reduce 42) on '['
+86: shift/reduce conflict (shift 94, reduce 42) on '.'
+state 86
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+	Expression : '!' Expression .  (42)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	'.'  shift 94
+	']'  reduce 42
+	')'  reduce 42
+	';'  reduce 42
+	','  reduce 42
+
+	Operator  goto 95
+
+
+state 87
+	Operator : '<' .  (47)
+
+	.  reduce 47
+
+
+state 88
+	Operator : "&&" .  (46)
+
+	.  reduce 46
+
+
+state 89
+	Operator : '-' .  (49)
+
+	.  reduce 49
+
+
+state 90
+	Operator : '+' .  (48)
+
+	.  reduce 48
+
+
+state 91
+	Operator : '*' .  (50)
+
+	.  reduce 50
+
+
+state 92
+	Expression : Expression '[' . Expression ']'  (31)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 105
+
+
+state 93
+	Statement : IF '(' Expression ')' . Statement ELSE Statement  (25)
+
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 106
+
+
+state 94
+	Expression : Expression '.' . LENGTH  (32)
+	Expression : Expression '.' . Identifier '(' ')'  (33)
+	Expression : Expression '.' . Identifier '(' ExpressionRepetition ')'  (34)
+
+	IDENTIFIER  shift 4
+	LENGTH  shift 107
+	.  error
+
+	Identifier  goto 108
+
+
+state 95
+	Expression : Expression Operator . Expression  (30)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 109
+
+
+state 96
+	Statement : WHILE '(' Expression ')' . Statement  (26)
+
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 110
+
+
+state 97
+	Statement : PRINT '(' Expression ')' . ';'  (27)
+
+	';'  shift 111
+	.  error
+
+
+state 98
+	Statement : Identifier '=' Expression ';' .  (28)
+
+	.  reduce 28
+
+
+state 99
+	Statement : Identifier '[' Expression ']' . '=' Expression ';'  (29)
+
+	'='  shift 112
+	.  error
+
+
+state 100
+	DeclarationTypesRepetition : ',' Type Identifier DeclarationTypesRepetition .  (16)
+
+	.  reduce 16
+
+
+state 101
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN . Expression ';' '}'  (13)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 113
+
+
+state 102
+	Expression : NEW INT '[' . Expression ']'  (40)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 114
+
+
+state 103
+	Expression : NEW Identifier '(' . ')'  (41)
+
+	')'  shift 115
+	.  error
+
+
+state 104
+	Expression : '(' Expression ')' .  (43)
+
+	.  reduce 43
+
+
+state 105
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression '[' Expression . ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	']'  shift 116
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 106
+	Statement : IF '(' Expression ')' Statement . ELSE Statement  (25)
+
+	ELSE  shift 117
+	.  error
+
+
+state 107
+	Expression : Expression '.' LENGTH .  (32)
+
+	.  reduce 32
+
+
+state 108
+	Expression : Expression '.' Identifier . '(' ')'  (33)
+	Expression : Expression '.' Identifier . '(' ExpressionRepetition ')'  (34)
+
+	'('  shift 118
+	.  error
+
+
+109: shift/reduce conflict (shift 87, reduce 30) on '<'
+109: shift/reduce conflict (shift 88, reduce 30) on "&&"
+109: shift/reduce conflict (shift 89, reduce 30) on '-'
+109: shift/reduce conflict (shift 90, reduce 30) on '+'
+109: shift/reduce conflict (shift 91, reduce 30) on '*'
+109: shift/reduce conflict (shift 92, reduce 30) on '['
+109: shift/reduce conflict (shift 94, reduce 30) on '.'
+state 109
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression Operator Expression .  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	'.'  shift 94
+	']'  reduce 30
+	')'  reduce 30
+	';'  reduce 30
+	','  reduce 30
+
+	Operator  goto 95
+
+
+state 110
+	Statement : WHILE '(' Expression ')' Statement .  (26)
+
+	.  reduce 26
+
+
+state 111
+	Statement : PRINT '(' Expression ')' ';' .  (27)
+
+	.  reduce 27
+
+
+state 112
+	Statement : Identifier '[' Expression ']' '=' . Expression ';'  (29)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 119
+
+
+state 113
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression . ';' '}'  (13)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	';'  shift 120
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 114
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+	Expression : NEW INT '[' Expression . ']'  (40)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	']'  shift 121
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 115
+	Expression : NEW Identifier '(' ')' .  (41)
+
+	.  reduce 41
+
+
+state 116
+	Expression : Expression '[' Expression ']' .  (31)
+
+	.  reduce 31
+
+
+state 117
+	Statement : IF '(' Expression ')' Statement ELSE . Statement  (25)
+
+	IF  shift 47
+	WHILE  shift 48
+	PRINT  shift 49
+	IDENTIFIER  shift 4
+	'{'  shift 50
+	.  error
+
+	Identifier  goto 51
+	Statement  goto 122
+
+
+state 118
+	Expression : Expression '.' Identifier '(' . ')'  (33)
+	Expression : Expression '.' Identifier '(' . ExpressionRepetition ')'  (34)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	')'  shift 123
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 124
+	ExpressionRepetition  goto 125
+
+
+state 119
+	Statement : Identifier '[' Expression ']' '=' Expression . ';'  (29)
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	';'  shift 126
+	'.'  shift 94
+	.  error
+
+	Operator  goto 95
+
+
+state 120
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' . '}'  (13)
+
+	'}'  shift 127
+	.  error
+
+
+state 121
+	Expression : NEW INT '[' Expression ']' .  (40)
+
+	.  reduce 40
+
+
+state 122
+	Statement : IF '(' Expression ')' Statement ELSE Statement .  (25)
+
+	.  reduce 25
+
+
+state 123
+	Expression : Expression '.' Identifier '(' ')' .  (33)
+
+	.  reduce 33
+
+
+state 124
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+	ExpressionRepetition : Expression .  (45)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	'.'  shift 94
+	')'  reduce 45
+	','  reduce 45
+
+	Operator  goto 95
+
+
+state 125
+	Expression : Expression '.' Identifier '(' ExpressionRepetition . ')'  (34)
+	ExpressionRepetition : ExpressionRepetition . ',' Expression  (44)
+
+	')'  shift 128
+	','  shift 129
+	.  error
+
+
+state 126
+	Statement : Identifier '[' Expression ']' '=' Expression ';' .  (29)
+
+	.  reduce 29
+
+
+state 127
+	MethodDeclaration : PUBLIC Type Identifier '(' DeclarationTypes ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}' .  (13)
+
+	.  reduce 13
+
+
+state 128
+	Expression : Expression '.' Identifier '(' ExpressionRepetition ')' .  (34)
+
+	.  reduce 34
+
+
+state 129
+	ExpressionRepetition : ExpressionRepetition ',' . Expression  (44)
+
+	IDENTIFIER  shift 4
+	INTEGERLITERAL  shift 65
+	TRUE  shift 66
+	FALSE  shift 67
+	NEW  shift 68
+	THIS  shift 69
+	'('  shift 70
+	'!'  shift 71
+	.  error
+
+	Identifier  goto 72
+	Expression  goto 130
+
+
+state 130
+	Expression : Expression . Operator Expression  (30)
+	Expression : Expression . '[' Expression ']'  (31)
+	Expression : Expression . '.' LENGTH  (32)
+	Expression : Expression . '.' Identifier '(' ')'  (33)
+	Expression : Expression . '.' Identifier '(' ExpressionRepetition ')'  (34)
+	ExpressionRepetition : ExpressionRepetition ',' Expression .  (44)
+
+	'<'  shift 87
+	"&&"  shift 88
+	'-'  shift 89
+	'+'  shift 90
+	'*'  shift 91
+	'['  shift 92
+	'.'  shift 94
+	')'  reduce 44
+	','  reduce 44
+
+	Operator  goto 95
+
+
+State 64 contains 1 shift/reduce conflict.
+State 86 contains 7 shift/reduce conflicts.
+State 109 contains 7 shift/reduce conflicts.
+
+
+39 terminals, 19 nonterminals
+52 grammar rules, 131 states
