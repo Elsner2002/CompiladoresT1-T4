@@ -363,12 +363,12 @@ class Yylex {
 public static int IDENT = 257;
 public static int NUM = 258;
 
-public static int IF 			= 259; 
-public static int ELSE 		= 260;
-public static int PUBLIC 	= 261;
+public static int IF = 259; 
+public static int ELSE = 260;
+public static int PUBLIC = 261;
 public static int PRIVATE = 262;
-public static int CLASS		= 263;
-public static int EQUALS	= 264;
+public static int CLASS = 263;
+public static int EQUALS = 264;
 public static int INT = 265;
 public static int STATIC = 266;
 public static int VOID = 267;
