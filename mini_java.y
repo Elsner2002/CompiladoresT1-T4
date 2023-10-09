@@ -4,11 +4,18 @@ import java.io.*;
 
 %token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENT, NUM, LENGTH, TRUE, FALSE, NEW, THIS
 
+%left ';'
+%nonassoc ','
 %right '='
 %nonassoc '<'
 %left '&&'
 %left '-' '+'
 %left '*'
+%right '!'
+%right '.'
+%nonassoc '(' ')'
+%nonassoc '[' ']'
+%nonassoc '{' '}'
 
 %%
 
@@ -76,11 +83,11 @@ Statement: '{' StatementRepetition '}'
 | IDENT '[' Expression ']' '=' Expression ';'
 ;
 
-Expression: Expression '&&' ExpressionAux 
-| Expression '+' ExpressionAux 
-| Expression '-' ExpressionAux 
-| Expression '*' ExpressionAux 
-| Expression '<' ExpressionAux
+Expression: Expression '&&' Expression 
+| Expression '+' Expression 
+| Expression '-' Expression 
+| Expression '*' Expression 
+| Expression '<' Expression
 | Expression '[' Expression ']'
 | Expression '.' LENGTH
 | Expression '.' IDENT '(' ')'
@@ -92,11 +99,8 @@ Expression: Expression '&&' ExpressionAux
 | THIS
 | NEW INT '[' Expression ']'
 | NEW IDENT '(' ')'
-| '!' ExpressionAux
+| '!' Expression
 | '(' Expression ')'
-;
-
-ExpressionAux: Expression
 ;
 
 ExpressionRepetition: ExpressionRepetition ',' Expression
