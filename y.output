@@ -52,11 +52,11 @@
   39            | IDENT '=' Expression ';'
   40            | IDENT '[' Expression ']' '=' Expression ';'
 
-  41  Expression : Expression "&&" ExpressionAux
-  42             | Expression '+' ExpressionAux
-  43             | Expression '-' ExpressionAux
-  44             | Expression '*' ExpressionAux
-  45             | Expression '<' ExpressionAux
+  41  Expression : Expression "&&" Expression
+  42             | Expression '+' Expression
+  43             | Expression '-' Expression
+  44             | Expression '*' Expression
+  45             | Expression '<' Expression
   46             | Expression '[' Expression ']'
   47             | Expression '.' LENGTH
   48             | Expression '.' IDENT '(' ')'
@@ -68,13 +68,11 @@
   54             | THIS
   55             | NEW INT '[' Expression ']'
   56             | NEW IDENT '(' ')'
-  57             | '!' ExpressionAux
+  57             | '!' Expression
   58             | '(' Expression ')'
 
-  59  ExpressionAux : Expression
-
-  60  ExpressionRepetition : ExpressionRepetition ',' Expression
-  61                       | Expression
+  59  ExpressionRepetition : ExpressionRepetition ',' Expression
+  60                       | Expression
 
 state 0
 	$accept : . Goal $end  (0)
@@ -571,8 +569,8 @@ state 53
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition . ')' '{' RETURN Expression ';' '}'  (23)
 	DeclarationTypesRepetition : DeclarationTypesRepetition . ',' Type IDENT  (26)
 
-	')'  shift 57
-	','  shift 58
+	','  shift 57
+	')'  shift 58
 	.  error
 
 
@@ -613,16 +611,6 @@ state 56
 
 
 state 57
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (18)
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' VarDeclaretionRepetition RETURN Expression ';' '}'  (19)
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' StatementRepetition RETURN Expression ';' '}'  (22)
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' RETURN Expression ';' '}'  (23)
-
-	'{'  shift 69
-	.  error
-
-
-state 58
 	DeclarationTypesRepetition : DeclarationTypesRepetition ',' . Type IDENT  (26)
 
 	BOOLEAN  shift 17
@@ -630,7 +618,17 @@ state 58
 	IDENT  shift 19
 	.  error
 
-	Type  goto 70
+	Type  goto 69
+
+
+state 58
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (18)
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' VarDeclaretionRepetition RETURN Expression ';' '}'  (19)
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' StatementRepetition RETURN Expression ';' '}'  (22)
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' . '{' RETURN Expression ';' '}'  (23)
+
+	'{'  shift 70
+	.  error
 
 
 state 59
@@ -649,8 +647,8 @@ state 60
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
 	Expression  goto 80
@@ -746,12 +744,19 @@ state 68
 
 
 state 69
+	DeclarationTypesRepetition : DeclarationTypesRepetition ',' Type . IDENT  (26)
+
+	IDENT  shift 93
+	.  error
+
+
+state 70
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' . VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}'  (18)
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' . VarDeclaretionRepetition RETURN Expression ';' '}'  (19)
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' . StatementRepetition RETURN Expression ';' '}'  (22)
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' . RETURN Expression ';' '}'  (23)
 
-	RETURN  shift 93
+	RETURN  shift 94
 	BOOLEAN  shift 17
 	INT  shift 18
 	IF  shift 61
@@ -762,17 +767,10 @@ state 69
 	.  error
 
 	Statement  goto 66
-	VarDeclaretionRepetition  goto 94
+	VarDeclaretionRepetition  goto 95
 	VarDeclaretion  goto 23
 	Type  goto 25
-	StatementRepetition  goto 95
-
-
-state 70
-	DeclarationTypesRepetition : DeclarationTypesRepetition ',' Type . IDENT  (26)
-
-	IDENT  shift 96
-	.  error
+	StatementRepetition  goto 96
 
 
 state 71
@@ -822,6 +820,22 @@ state 77
 
 
 state 78
+	Expression : '!' . Expression  (57)
+
+	IDENT  shift 72
+	NUM  shift 73
+	TRUE  shift 74
+	FALSE  shift 75
+	NEW  shift 76
+	THIS  shift 77
+	'!'  shift 78
+	'('  shift 79
+	.  error
+
+	Expression  goto 100
+
+
+state 79
 	Expression : '(' . Expression ')'  (58)
 
 	IDENT  shift 72
@@ -830,50 +844,33 @@ state 78
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
-	.  error
-
-	Expression  goto 100
-
-
-state 79
-	Expression : '!' . ExpressionAux  (57)
-
-	IDENT  shift 72
-	NUM  shift 73
-	TRUE  shift 74
-	FALSE  shift 75
-	NEW  shift 76
-	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
 	Expression  goto 101
-	ExpressionAux  goto 102
 
 
 state 80
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' RETURN Expression . ';' '}'  (25)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 102
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 109
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
@@ -886,11 +883,11 @@ state 81
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 111
+	Expression  goto 110
 
 
 state 82
@@ -902,11 +899,11 @@ state 82
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 112
+	Expression  goto 111
 
 
 state 83
@@ -918,11 +915,11 @@ state 83
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 113
+	Expression  goto 112
 
 
 state 84
@@ -934,11 +931,11 @@ state 84
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 114
+	Expression  goto 113
 
 
 state 85
@@ -950,11 +947,11 @@ state 85
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 115
+	Expression  goto 114
 
 
 state 86
@@ -981,7 +978,7 @@ state 88
 	PRINT  shift 63
 	IDENT  shift 86
 	'{'  shift 65
-	'}'  shift 116
+	'}'  shift 115
 	.  error
 
 	Statement  goto 92
@@ -996,18 +993,18 @@ state 89
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 117
+	Expression  goto 116
 
 
 state 90
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition StatementRepetition . RETURN Expression ';' '}'  (20)
 	StatementRepetition : StatementRepetition . Statement  (28)
 
-	RETURN  shift 118
+	RETURN  shift 117
 	IF  shift 61
 	WHILE  shift 62
 	PRINT  shift 63
@@ -1027,11 +1024,11 @@ state 91
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 119
+	Expression  goto 118
 
 
 state 92
@@ -1041,6 +1038,12 @@ state 92
 
 
 state 93
+	DeclarationTypesRepetition : DeclarationTypesRepetition ',' Type IDENT .  (26)
+
+	.  reduce 26
+
+
+state 94
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN . Expression ';' '}'  (23)
 
 	IDENT  shift 72
@@ -1049,19 +1052,19 @@ state 93
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 120
+	Expression  goto 119
 
 
-state 94
+state 95
 	VarDeclaretionRepetition : VarDeclaretionRepetition . VarDeclaretion  (13)
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition . StatementRepetition RETURN Expression ';' '}'  (18)
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition . RETURN Expression ';' '}'  (19)
 
-	RETURN  shift 121
+	RETURN  shift 120
 	BOOLEAN  shift 17
 	INT  shift 18
 	IF  shift 61
@@ -1074,14 +1077,14 @@ state 94
 	Statement  goto 66
 	VarDeclaretion  goto 32
 	Type  goto 25
-	StatementRepetition  goto 122
+	StatementRepetition  goto 121
 
 
-state 95
+state 96
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition . RETURN Expression ';' '}'  (22)
 	StatementRepetition : StatementRepetition . Statement  (28)
 
-	RETURN  shift 123
+	RETURN  shift 122
 	IF  shift 61
 	WHILE  shift 62
 	PRINT  shift 63
@@ -1090,12 +1093,6 @@ state 95
 	.  error
 
 	Statement  goto 92
-
-
-state 96
-	DeclarationTypesRepetition : DeclarationTypesRepetition ',' Type IDENT .  (26)
-
-	.  reduce 26
 
 
 state 97
@@ -1108,29 +1105,54 @@ state 97
 	'{'  shift 65
 	.  error
 
-	Statement  goto 124
+	Statement  goto 123
 
 
 state 98
 	Expression : NEW INT . '[' Expression ']'  (55)
 
-	'['  shift 125
+	'['  shift 124
 	.  error
 
 
 state 99
 	Expression : NEW IDENT . '(' ')'  (56)
 
-	'('  shift 126
+	'('  shift 125
 	.  error
 
 
 state 100
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
+	Expression : '!' Expression .  (57)
+
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 57
+	','  reduce 57
+	'<'  reduce 57
+	"&&"  reduce 57
+	'-'  reduce 57
+	'+'  reduce 57
+	'*'  reduce 57
+	')'  reduce 57
+	']'  reduce 57
+
+
+state 101
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
@@ -1142,52 +1164,21 @@ state 100
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	')'  shift 127
-	'.'  shift 110
+	'.'  shift 108
+	')'  shift 126
+	'['  shift 109
 	.  error
-
-
-101: shift/reduce conflict (shift 103, reduce 59) on '<'
-101: shift/reduce conflict (shift 104, reduce 59) on "&&"
-101: shift/reduce conflict (shift 105, reduce 59) on '-'
-101: shift/reduce conflict (shift 106, reduce 59) on '+'
-101: shift/reduce conflict (shift 107, reduce 59) on '*'
-101: shift/reduce conflict (shift 108, reduce 59) on '['
-101: shift/reduce conflict (shift 110, reduce 59) on '.'
-state 101
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
-	Expression : Expression . '[' Expression ']'  (46)
-	Expression : Expression . '.' LENGTH  (47)
-	Expression : Expression . '.' IDENT '(' ')'  (48)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
-	ExpressionAux : Expression .  (59)
-
-	'<'  shift 103
-	"&&"  shift 104
-	'-'  shift 105
-	'+'  shift 106
-	'*'  shift 107
-	'['  shift 108
-	'.'  shift 110
-	']'  reduce 59
-	')'  reduce 59
-	';'  reduce 59
-	','  reduce 59
 
 
 state 102
-	Expression : '!' ExpressionAux .  (57)
+	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' RETURN Expression ';' . '}'  (25)
 
-	.  reduce 57
+	'}'  shift 127
+	.  error
 
 
 state 103
-	Expression : Expression '<' . ExpressionAux  (45)
+	Expression : Expression '<' . Expression  (45)
 
 	IDENT  shift 72
 	NUM  shift 73
@@ -1195,16 +1186,15 @@ state 103
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 101
-	ExpressionAux  goto 128
+	Expression  goto 128
 
 
 state 104
-	Expression : Expression "&&" . ExpressionAux  (41)
+	Expression : Expression "&&" . Expression  (41)
 
 	IDENT  shift 72
 	NUM  shift 73
@@ -1212,16 +1202,15 @@ state 104
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 101
-	ExpressionAux  goto 129
+	Expression  goto 129
 
 
 state 105
-	Expression : Expression '-' . ExpressionAux  (43)
+	Expression : Expression '-' . Expression  (43)
 
 	IDENT  shift 72
 	NUM  shift 73
@@ -1229,16 +1218,15 @@ state 105
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 101
-	ExpressionAux  goto 130
+	Expression  goto 130
 
 
 state 106
-	Expression : Expression '+' . ExpressionAux  (42)
+	Expression : Expression '+' . Expression  (42)
 
 	IDENT  shift 72
 	NUM  shift 73
@@ -1246,16 +1234,15 @@ state 106
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 101
-	ExpressionAux  goto 131
+	Expression  goto 131
 
 
 state 107
-	Expression : Expression '*' . ExpressionAux  (44)
+	Expression : Expression '*' . Expression  (44)
 
 	IDENT  shift 72
 	NUM  shift 73
@@ -1263,15 +1250,24 @@ state 107
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 101
-	ExpressionAux  goto 132
+	Expression  goto 132
 
 
 state 108
+	Expression : Expression '.' . LENGTH  (47)
+	Expression : Expression '.' . IDENT '(' ')'  (48)
+	Expression : Expression '.' . IDENT '(' ExpressionRepetition ')'  (49)
+
+	IDENT  shift 133
+	LENGTH  shift 134
+	.  error
+
+
+state 109
 	Expression : Expression '[' . Expression ']'  (46)
 
 	IDENT  shift 72
@@ -1280,37 +1276,43 @@ state 108
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 133
-
-
-state 109
-	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' RETURN Expression ';' . '}'  (25)
-
-	'}'  shift 134
-	.  error
+	Expression  goto 135
 
 
 state 110
-	Expression : Expression '.' . LENGTH  (47)
-	Expression : Expression '.' . IDENT '(' ')'  (48)
-	Expression : Expression '.' . IDENT '(' ExpressionRepetition ')'  (49)
+	Statement : IF '(' Expression . ')' Statement ELSE Statement  (36)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
-	IDENT  shift 135
-	LENGTH  shift 136
+	'<'  shift 103
+	"&&"  shift 104
+	'-'  shift 105
+	'+'  shift 106
+	'*'  shift 107
+	'.'  shift 108
+	')'  shift 136
+	'['  shift 109
 	.  error
 
 
 state 111
-	Statement : IF '(' Expression . ')' Statement ELSE Statement  (36)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Statement : WHILE '(' Expression . ')' Statement  (37)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
@@ -1321,19 +1323,19 @@ state 111
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
+	'.'  shift 108
 	')'  shift 137
-	'.'  shift 110
+	'['  shift 109
 	.  error
 
 
 state 112
-	Statement : WHILE '(' Expression . ')' Statement  (37)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Statement : PRINT '(' Expression . ')' ';'  (38)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
@@ -1344,42 +1346,42 @@ state 112
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
+	'.'  shift 108
 	')'  shift 138
-	'.'  shift 110
+	'['  shift 109
 	.  error
 
 
 state 113
-	Statement : PRINT '(' Expression . ')' ';'  (38)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Statement : IDENT '=' Expression . ';'  (39)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 139
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	')'  shift 139
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
 state 114
-	Statement : IDENT '=' Expression . ';'  (39)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Statement : IDENT '[' Expression . ']' '=' Expression ';'  (40)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
@@ -1390,65 +1392,42 @@ state 114
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 140
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
+	']'  shift 140
 	.  error
 
 
 state 115
-	Statement : IDENT '[' Expression . ']' '=' Expression ';'  (40)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
-	Expression : Expression . '[' Expression ']'  (46)
-	Expression : Expression . '.' LENGTH  (47)
-	Expression : Expression . '.' IDENT '(' ')'  (48)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
-
-	'<'  shift 103
-	"&&"  shift 104
-	'-'  shift 105
-	'+'  shift 106
-	'*'  shift 107
-	'['  shift 108
-	']'  shift 141
-	'.'  shift 110
-	.  error
-
-
-state 116
 	Statement : '{' StatementRepetition '}' .  (34)
 
 	.  reduce 34
 
 
-state 117
+state 116
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition RETURN Expression . ';' '}'  (21)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 141
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 142
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
-state 118
+state 117
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition StatementRepetition RETURN . Expression ';' '}'  (20)
 
 	IDENT  shift 72
@@ -1457,60 +1436,60 @@ state 118
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 143
+	Expression  goto 142
 
 
-state 119
+state 118
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' StatementRepetition RETURN Expression . ';' '}'  (24)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 143
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
+	'.'  shift 108
+	'['  shift 109
+	.  error
+
+
+state 119
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN Expression . ';' '}'  (23)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
+
 	';'  shift 144
-	'.'  shift 110
+	'<'  shift 103
+	"&&"  shift 104
+	'-'  shift 105
+	'+'  shift 106
+	'*'  shift 107
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
 state 120
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN Expression . ';' '}'  (23)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
-	Expression : Expression . '[' Expression ']'  (46)
-	Expression : Expression . '.' LENGTH  (47)
-	Expression : Expression . '.' IDENT '(' ')'  (48)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
-
-	'<'  shift 103
-	"&&"  shift 104
-	'-'  shift 105
-	'+'  shift 106
-	'*'  shift 107
-	'['  shift 108
-	';'  shift 145
-	'.'  shift 110
-	.  error
-
-
-state 121
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition RETURN . Expression ';' '}'  (19)
 
 	IDENT  shift 72
@@ -1519,18 +1498,18 @@ state 121
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 146
+	Expression  goto 145
 
 
-state 122
+state 121
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition . RETURN Expression ';' '}'  (18)
 	StatementRepetition : StatementRepetition . Statement  (28)
 
-	RETURN  shift 147
+	RETURN  shift 146
 	IF  shift 61
 	WHILE  shift 62
 	PRINT  shift 63
@@ -1541,7 +1520,7 @@ state 122
 	Statement  goto 92
 
 
-state 123
+state 122
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN . Expression ';' '}'  (22)
 
 	IDENT  shift 72
@@ -1550,21 +1529,21 @@ state 123
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 148
+	Expression  goto 147
+
+
+state 123
+	MainClass : CLASS IDENT '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement . '}' '}'  (3)
+
+	'}'  shift 148
+	.  error
 
 
 state 124
-	MainClass : CLASS IDENT '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement . '}' '}'  (3)
-
-	'}'  shift 149
-	.  error
-
-
-state 125
 	Expression : NEW INT '[' . Expression ']'  (55)
 
 	IDENT  shift 72
@@ -1573,62 +1552,176 @@ state 125
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 150
+	Expression  goto 149
+
+
+state 125
+	Expression : NEW IDENT '(' . ')'  (56)
+
+	')'  shift 150
+	.  error
 
 
 state 126
-	Expression : NEW IDENT '(' . ')'  (56)
-
-	')'  shift 151
-	.  error
-
-
-state 127
 	Expression : '(' Expression ')' .  (58)
 
 	.  reduce 58
 
 
-state 128
-	Expression : Expression '<' ExpressionAux .  (45)
+state 127
+	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' RETURN Expression ';' '}' .  (25)
 
-	.  reduce 45
+	.  reduce 25
+
+
+state 128
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression '<' Expression .  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
+
+	"&&"  shift 104
+	'-'  shift 105
+	'+'  shift 106
+	'*'  shift 107
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 45
+	','  reduce 45
+	')'  reduce 45
+	']'  reduce 45
 
 
 state 129
-	Expression : Expression "&&" ExpressionAux .  (41)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression "&&" Expression .  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
-	.  reduce 41
+	'-'  shift 105
+	'+'  shift 106
+	'*'  shift 107
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 41
+	','  reduce 41
+	'<'  reduce 41
+	"&&"  reduce 41
+	')'  reduce 41
+	']'  reduce 41
 
 
 state 130
-	Expression : Expression '-' ExpressionAux .  (43)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression '-' Expression .  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
-	.  reduce 43
+	'*'  shift 107
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 43
+	','  reduce 43
+	'<'  reduce 43
+	"&&"  reduce 43
+	'-'  reduce 43
+	'+'  reduce 43
+	')'  reduce 43
+	']'  reduce 43
 
 
 state 131
-	Expression : Expression '+' ExpressionAux .  (42)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression '+' Expression .  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
-	.  reduce 42
+	'*'  shift 107
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 42
+	','  reduce 42
+	'<'  reduce 42
+	"&&"  reduce 42
+	'-'  reduce 42
+	'+'  reduce 42
+	')'  reduce 42
+	']'  reduce 42
 
 
 state 132
-	Expression : Expression '*' ExpressionAux .  (44)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression '*' Expression .  (44)
+	Expression : Expression . '<' Expression  (45)
+	Expression : Expression . '[' Expression ']'  (46)
+	Expression : Expression . '.' LENGTH  (47)
+	Expression : Expression . '.' IDENT '(' ')'  (48)
+	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
-	.  reduce 44
+	'.'  shift 108
+	'['  shift 109
+	';'  reduce 44
+	','  reduce 44
+	'<'  reduce 44
+	"&&"  reduce 44
+	'-'  reduce 44
+	'+'  reduce 44
+	'*'  reduce 44
+	')'  reduce 44
+	']'  reduce 44
 
 
 state 133
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression '.' IDENT . '(' ')'  (48)
+	Expression : Expression '.' IDENT . '(' ExpressionRepetition ')'  (49)
+
+	'('  shift 151
+	.  error
+
+
+state 134
+	Expression : Expression '.' LENGTH .  (47)
+
+	.  reduce 47
+
+
+state 135
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression '[' Expression . ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
@@ -1640,34 +1733,27 @@ state 133
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
+	'.'  shift 108
+	'['  shift 109
 	']'  shift 152
-	'.'  shift 110
-	.  error
-
-
-state 134
-	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' RETURN Expression ';' '}' .  (25)
-
-	.  reduce 25
-
-
-state 135
-	Expression : Expression '.' IDENT . '(' ')'  (48)
-	Expression : Expression '.' IDENT . '(' ExpressionRepetition ')'  (49)
-
-	'('  shift 153
 	.  error
 
 
 state 136
-	Expression : Expression '.' LENGTH .  (47)
+	Statement : IF '(' Expression ')' . Statement ELSE Statement  (36)
 
-	.  reduce 47
+	IF  shift 61
+	WHILE  shift 62
+	PRINT  shift 63
+	IDENT  shift 86
+	'{'  shift 65
+	.  error
+
+	Statement  goto 153
 
 
 state 137
-	Statement : IF '(' Expression ')' . Statement ELSE Statement  (36)
+	Statement : WHILE '(' Expression ')' . Statement  (37)
 
 	IF  shift 61
 	WHILE  shift 62
@@ -1680,106 +1766,93 @@ state 137
 
 
 state 138
-	Statement : WHILE '(' Expression ')' . Statement  (37)
+	Statement : PRINT '(' Expression ')' . ';'  (38)
 
-	IF  shift 61
-	WHILE  shift 62
-	PRINT  shift 63
-	IDENT  shift 86
-	'{'  shift 65
+	';'  shift 155
 	.  error
-
-	Statement  goto 155
 
 
 state 139
-	Statement : PRINT '(' Expression ')' . ';'  (38)
-
-	';'  shift 156
-	.  error
-
-
-state 140
 	Statement : IDENT '=' Expression ';' .  (39)
 
 	.  reduce 39
 
 
-state 141
+state 140
 	Statement : IDENT '[' Expression ']' . '=' Expression ';'  (40)
 
-	'='  shift 157
+	'='  shift 156
+	.  error
+
+
+state 141
+	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition RETURN Expression ';' . '}'  (21)
+
+	'}'  shift 157
 	.  error
 
 
 state 142
-	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition RETURN Expression ';' . '}'  (21)
-
-	'}'  shift 158
-	.  error
-
-
-state 143
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression . ';' '}'  (20)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 158
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 159
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
+	.  error
+
+
+state 143
+	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' StatementRepetition RETURN Expression ';' . '}'  (24)
+
+	'}'  shift 159
 	.  error
 
 
 state 144
-	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' StatementRepetition RETURN Expression ';' . '}'  (24)
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN Expression ';' . '}'  (23)
 
 	'}'  shift 160
 	.  error
 
 
 state 145
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN Expression ';' . '}'  (23)
-
-	'}'  shift 161
-	.  error
-
-
-state 146
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition RETURN Expression . ';' '}'  (19)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 161
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 162
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
-state 147
+state 146
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition RETURN . Expression ';' '}'  (18)
 
 	IDENT  shift 72
@@ -1788,49 +1861,49 @@ state 147
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 163
+	Expression  goto 162
 
 
-state 148
+state 147
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN Expression . ';' '}'  (22)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 163
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 164
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
+	.  error
+
+
+state 148
+	MainClass : CLASS IDENT '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' . '}'  (3)
+
+	'}'  shift 164
 	.  error
 
 
 state 149
-	MainClass : CLASS IDENT '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' . '}'  (3)
-
-	'}'  shift 165
-	.  error
-
-
-state 150
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
@@ -1842,25 +1915,19 @@ state 150
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	']'  shift 166
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
+	']'  shift 165
 	.  error
 
 
-state 151
+state 150
 	Expression : NEW IDENT '(' ')' .  (56)
 
 	.  reduce 56
 
 
-state 152
-	Expression : Expression '[' Expression ']' .  (46)
-
-	.  reduce 46
-
-
-state 153
+state 151
 	Expression : Expression '.' IDENT '(' . ')'  (48)
 	Expression : Expression '.' IDENT '(' . ExpressionRepetition ')'  (49)
 
@@ -1870,35 +1937,41 @@ state 153
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	')'  shift 167
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
+	')'  shift 166
 	.  error
 
-	Expression  goto 168
-	ExpressionRepetition  goto 169
+	Expression  goto 167
+	ExpressionRepetition  goto 168
+
+
+state 152
+	Expression : Expression '[' Expression ']' .  (46)
+
+	.  reduce 46
+
+
+state 153
+	Statement : IF '(' Expression ')' Statement . ELSE Statement  (36)
+
+	ELSE  shift 169
+	.  error
 
 
 state 154
-	Statement : IF '(' Expression ')' Statement . ELSE Statement  (36)
-
-	ELSE  shift 170
-	.  error
-
-
-state 155
 	Statement : WHILE '(' Expression ')' Statement .  (37)
 
 	.  reduce 37
 
 
-state 156
+state 155
 	Statement : PRINT '(' Expression ')' ';' .  (38)
 
 	.  reduce 38
 
 
-state 157
+state 156
 	Statement : IDENT '[' Expression ']' '=' . Expression ';'  (40)
 
 	IDENT  shift 72
@@ -1907,126 +1980,126 @@ state 157
 	FALSE  shift 75
 	NEW  shift 76
 	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
+	'!'  shift 78
+	'('  shift 79
 	.  error
 
-	Expression  goto 171
+	Expression  goto 170
 
 
-state 158
+state 157
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition RETURN Expression ';' '}' .  (21)
 
 	.  reduce 21
 
 
-state 159
+state 158
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' . '}'  (20)
 
-	'}'  shift 172
+	'}'  shift 171
 	.  error
 
 
-state 160
+state 159
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' StatementRepetition RETURN Expression ';' '}' .  (24)
 
 	.  reduce 24
 
 
-state 161
+state 160
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' RETURN Expression ';' '}' .  (23)
 
 	.  reduce 23
 
 
-state 162
+state 161
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition RETURN Expression ';' . '}'  (19)
 
-	'}'  shift 173
+	'}'  shift 172
 	.  error
 
 
-state 163
+state 162
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression . ';' '}'  (18)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 173
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 174
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
+	.  error
+
+
+state 163
+	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN Expression ';' . '}'  (22)
+
+	'}'  shift 174
 	.  error
 
 
 state 164
-	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN Expression ';' . '}'  (22)
-
-	'}'  shift 175
-	.  error
-
-
-state 165
 	MainClass : CLASS IDENT '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}' .  (3)
 
 	.  reduce 3
 
 
-state 166
+state 165
 	Expression : NEW INT '[' Expression ']' .  (55)
 
 	.  reduce 55
 
 
-state 167
+state 166
 	Expression : Expression '.' IDENT '(' ')' .  (48)
 
 	.  reduce 48
 
 
-state 168
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+state 167
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
-	ExpressionRepetition : Expression .  (61)
+	ExpressionRepetition : Expression .  (60)
 
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	'.'  shift 110
-	')'  reduce 61
-	','  reduce 61
+	'.'  shift 108
+	'['  shift 109
+	','  reduce 60
+	')'  reduce 60
 
 
-state 169
+state 168
 	Expression : Expression '.' IDENT '(' ExpressionRepetition . ')'  (49)
-	ExpressionRepetition : ExpressionRepetition . ',' Expression  (60)
+	ExpressionRepetition : ExpressionRepetition . ',' Expression  (59)
 
+	','  shift 175
 	')'  shift 176
-	','  shift 177
 	.  error
 
 
-state 170
+state 169
 	Statement : IF '(' Expression ')' Statement ELSE . Statement  (36)
 
 	IF  shift 61
@@ -2036,55 +2109,71 @@ state 170
 	'{'  shift 65
 	.  error
 
-	Statement  goto 178
+	Statement  goto 177
 
 
-state 171
+state 170
 	Statement : IDENT '[' Expression ']' '=' Expression . ';'  (40)
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
 
+	';'  shift 178
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	';'  shift 179
-	'.'  shift 110
+	'.'  shift 108
+	'['  shift 109
 	.  error
 
 
-state 172
+state 171
 	MethodDeclaration : PUBLIC Type IDENT '(' ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}' .  (20)
 
 	.  reduce 20
 
 
-state 173
+state 172
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition RETURN Expression ';' '}' .  (19)
 
 	.  reduce 19
 
 
-state 174
+state 173
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' . '}'  (18)
 
-	'}'  shift 180
+	'}'  shift 179
 	.  error
 
 
-state 175
+state 174
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' StatementRepetition RETURN Expression ';' '}' .  (22)
 
 	.  reduce 22
+
+
+state 175
+	ExpressionRepetition : ExpressionRepetition ',' . Expression  (59)
+
+	IDENT  shift 72
+	NUM  shift 73
+	TRUE  shift 74
+	FALSE  shift 75
+	NEW  shift 76
+	THIS  shift 77
+	'!'  shift 78
+	'('  shift 79
+	.  error
+
+	Expression  goto 180
 
 
 state 176
@@ -2094,64 +2183,45 @@ state 176
 
 
 state 177
-	ExpressionRepetition : ExpressionRepetition ',' . Expression  (60)
-
-	IDENT  shift 72
-	NUM  shift 73
-	TRUE  shift 74
-	FALSE  shift 75
-	NEW  shift 76
-	THIS  shift 77
-	'('  shift 78
-	'!'  shift 79
-	.  error
-
-	Expression  goto 181
-
-
-state 178
 	Statement : IF '(' Expression ')' Statement ELSE Statement .  (36)
 
 	.  reduce 36
 
 
-state 179
+state 178
 	Statement : IDENT '[' Expression ']' '=' Expression ';' .  (40)
 
 	.  reduce 40
 
 
-state 180
+state 179
 	MethodDeclaration : PUBLIC Type IDENT '(' DeclarationTypesRepetition ')' '{' VarDeclaretionRepetition StatementRepetition RETURN Expression ';' '}' .  (18)
 
 	.  reduce 18
 
 
-state 181
-	Expression : Expression . "&&" ExpressionAux  (41)
-	Expression : Expression . '+' ExpressionAux  (42)
-	Expression : Expression . '-' ExpressionAux  (43)
-	Expression : Expression . '*' ExpressionAux  (44)
-	Expression : Expression . '<' ExpressionAux  (45)
+state 180
+	Expression : Expression . "&&" Expression  (41)
+	Expression : Expression . '+' Expression  (42)
+	Expression : Expression . '-' Expression  (43)
+	Expression : Expression . '*' Expression  (44)
+	Expression : Expression . '<' Expression  (45)
 	Expression : Expression . '[' Expression ']'  (46)
 	Expression : Expression . '.' LENGTH  (47)
 	Expression : Expression . '.' IDENT '(' ')'  (48)
 	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (49)
-	ExpressionRepetition : ExpressionRepetition ',' Expression .  (60)
+	ExpressionRepetition : ExpressionRepetition ',' Expression .  (59)
 
 	'<'  shift 103
 	"&&"  shift 104
 	'-'  shift 105
 	'+'  shift 106
 	'*'  shift 107
-	'['  shift 108
-	'.'  shift 110
-	')'  reduce 60
-	','  reduce 60
+	'.'  shift 108
+	'['  shift 109
+	','  reduce 59
+	')'  reduce 59
 
 
-State 101 contains 7 shift/reduce conflicts.
-
-
-39 terminals, 16 nonterminals
-62 grammar rules, 182 states
+39 terminals, 15 nonterminals
+61 grammar rules, 181 states
