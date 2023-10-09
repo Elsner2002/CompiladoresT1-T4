@@ -12,7 +12,7 @@ import java.io.*;
 %left '-' '+'
 %left '*'
 %right '!'
-%right '.'
+%left '.'
 %nonassoc '(' ')'
 %nonassoc '[' ']'
 %nonassoc '{' '}'
