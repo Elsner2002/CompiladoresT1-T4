@@ -505,7 +505,7 @@ final static String yyrule[] = {
   static boolean interactive;
 
   public static void main(String args[]) throws IOException {
-    System.out.println("BYACC/Java with JFlex Calculator Demo");
+    System.out.println("BYACC/Java with JFlex Mini Java");
 
     Parser yyparser;
     if ( args.length > 0 ) {
