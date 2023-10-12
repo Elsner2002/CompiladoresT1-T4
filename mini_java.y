@@ -2,13 +2,13 @@
 import java.io.*;
 %}
 
-%token CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENT, NUM, LENGTH, TRUE, FALSE, NEW, THIS
+%token AND, CLASS, PUBLIC, STATIC, VOID, MAIN, STRING, EXTENDS, RETURN, BOOLEAN, INT, IF, ELSE, WHILE, PRINT, IDENT, NUM, LENGTH, TRUE, FALSE, NEW, THIS
 
 %left ';'
 %nonassoc ','
 %right '='
+%left AND
 %nonassoc '<'
-%left '&&'
 %left '-' '+'
 %left '*'
 %right '!'
@@ -27,6 +27,7 @@ MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '
 ;
 
 ClassDeclaretionRepetition: ClassDeclaretionRepetition ClassDeclaretion
+| ClassDeclaretion
 ;
 
 ClassDeclaretion: CLASS IDENT EXTENDS IDENT '{' VarDeclaretionRepetition MethodDeclarationRepetition '}' 
@@ -83,7 +84,7 @@ Statement: '{' StatementRepetition '}'
 | IDENT '[' Expression ']' '=' Expression ';'
 ;
 
-Expression: Expression '&&' Expression 
+Expression: Expression AND Expression 
 | Expression '+' Expression 
 | Expression '-' Expression 
 | Expression '*' Expression 

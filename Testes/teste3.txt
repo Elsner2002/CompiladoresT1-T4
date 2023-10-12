@@ -1,0 +1,11 @@
+class A { 
+    public static void main ( String [ ] args ) { 
+        {
+            if ( x < y ) {
+                x = y;
+            } else {
+                y = x;
+            }
+        } 
+    } 
+ }

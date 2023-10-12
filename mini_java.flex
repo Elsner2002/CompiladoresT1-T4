@@ -34,6 +34,7 @@ public static int RETURN = 276;
 public static int PRINT = 277;
 public static int STRING = 278;
 public static int COMMENT = 279;
+public static int AND = 280;
 
 
 %} 
@@ -54,29 +55,30 @@ LineTerminator = \r|\n|\r\n
 "/*" .* "*/" { }
 
 
-if				{return IF;}
-else			{return ELSE;} 
-public		{return PUBLIC;}
-private		{return PRIVATE;}
-class			{return CLASS;}
-int       {return INT;}
-static    {return STATIC;}
-void      {return VOID;}
-main      {return MAIN;}
-while     {return WHILE;}
-true      {return TRUE;}
-false     {return FALSE;}
-this      {return THIS;}
-new       {return NEW;}
-boolean   {return BOOLEAN;}
-extends   {return EXTENDS;}
-return    {return RETURN;}
-System.out.println  {return PRINT;}
-String    {return STRING;}
+if				{return Parser.IF;}
+else			{return Parser.ELSE;} 
+public		{return Parser.PUBLIC;}
+class			{return Parser.CLASS;}
+int       {return Parser.INT;}
+static    {return Parser.STATIC;}
+void      {return Parser.VOID;}
+main      {return Parser.MAIN;}
+while     {return Parser.WHILE;}
+true      {return Parser.TRUE;}
+false     {return Parser.FALSE;}
+this      {return Parser.THIS;}
+new       {return Parser.NEW;}
+boolean   {return Parser.BOOLEAN;}
+extends   {return Parser.EXTENDS;}
+return    {return Parser.RETURN;}
+System.out.println  {return Parser.PRINT;}
+String    {return Parser.STRING;}
+&&        {return Parser.AND;}
 
 
-{LETTER}({LETTER}|{DIGIT}|_)* {return IDENT;}
-{DIGIT}+                    {return NUM;}
+{LETTER}({LETTER}|{DIGIT}|_)* { yyparser.yylval = new ParserVal(yytext());
+                                return Parser.IDENT;}
+{DIGIT}+                    {return Parser.NUM;}
 
 ":" |
 "{" |
@@ -94,7 +96,6 @@ String    {return STRING;}
 "<" |
 "!" |
 "?" |
-"&&" |
 "+" |
 "," {return yytext().charAt(0);}
 
