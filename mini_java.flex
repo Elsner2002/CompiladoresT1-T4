@@ -51,6 +51,11 @@ LineTerminator = \r|\n|\r\n
 
 
 %%
+
+"$TRACE_ON"  { yyparser.setDebug(true);  }
+"$TRACE_OFF" { yyparser.setDebug(false); }
+"$MOSTRA_TS" { yyparser.listarTS(); }
+
 "//" [^\r\n]* { }
 "/*" .* "*/" { }
 
