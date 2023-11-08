@@ -24,14 +24,22 @@ import java.io.*;
 Goal: MainClass ClassDeclarationRepetition
 ;
 
-MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}'
+MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}' {  TS_entry nodo = ts.pesquisa($2);
+                                                                                                        if (nodo != null) 
+                                                                                                          yyerror("main class >" + $2 + "< jah declarada");
+                                                                                                        else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                                                                                                     }
 ;
 
 ClassDeclarationRepetition: ClassDeclarationRepetition ClassDeclaration
 |
 ;
 
-ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclarationRepetition '}'  
+ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclarationRepetition '}'  { TS_entry nodo = ts.pesquisa($2);
+                                                                                                      if (nodo != null) 
+                                                                                                        yyerror("classe >" + $2 + "< jah declarada");
+                                                                                                      else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                                                                                                    }
 ;
 
 Extends: EXTENDS IDENT
@@ -46,28 +54,49 @@ MethodDeclarationRepetition: MethodDeclarationRepetition MethodDeclaration
 |
 ;
 
-VarDeclaration: Type IDENT ';'
+VarDeclaration: Type IDENT ';'{  TS_entry nodo = ts.pesquisa($2);
+                                  if (nodo != null) 
+                                    yyerror("variavel >" + $2 + "< jah declarada");
+                                  else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                              }
 ;
 
-MethodDeclaration: PUBLIC Type IDENT '(' DeclarationTypes ')' VarDeclarationRepetition '{' StatementRepetition RETURN Expression ';' '}'
+MethodDeclaration: PUBLIC Type IDENT '(' DeclarationTypes ')' VarDeclarationRepetition '{' StatementRepetition RETURN Expression ';' '}' {  TS_entry nodo = ts.pesquisa($3);
+                                                                                                                                            if (nodo != null) 
+                                                                                                                                              yyerror("metodo >" + $3 + "< jah declarado");
+                                                                                                                                            else ts.insert(new TS_entry($3, (TS_entry)$2, currClass)); 
+                                                                                                                                          }
 ;
 
 DeclarationTypes: DeclarationTypesRepetition
 |
 ;
 
-DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT 
-| Type IDENT
+DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entry nodo = ts.pesquisa($4);
+                                                                          if (nodo != null) 
+                                                                            yyerror("variavel >" + $4 + "< jah declarada");
+                                                                          else ts.insert(new TS_entry($4, (TS_entry)$3, currClass)); 
+                                                                      }
+| Type IDENT      { TS_entry nodo = ts.pesquisa($2);
+                    if (nodo != null) 
+                      yyerror("variavel >" + $2 + "< jah declarada");
+                    else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                  }
 ;
 
 StatementRepetition: StatementRepetition Statement
 |
 ;
 
-Type: INT '[' ']'
-| BOOLEAN
-| INT
-| IDENT
+Type: INT '[' ']' { $$ = Tp_ARRAYINT; }
+| BOOLEAN { $$ = Tp_BOOLEAN; }
+| INT { $$ = Tp_INT; }
+| IDENT { TS_entry nodo = ts.pesquisa($1);
+                if (nodo == null ) 
+                   yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
+                else 
+                    $$ = nodo;
+               } 
 ;
 
 Statement: '{' StatementRepetition '}'
@@ -109,11 +138,10 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
   private TabSimb ts;
 
   public static TS_entry Tp_INT =  new TS_entry("int", null, ClasseID.TipoBase);
-  public static TS_entry Tp_DOUBLE = new TS_entry("double", null,  ClasseID.TipoBase);
-  public static TS_entry Tp_BOOL = new TS_entry("bool", null,  ClasseID.TipoBase);
+  public static TS_entry Tp_ARRAYINT = new TS_entry("int[]", null,  ClasseID.TipoBase);
+  public static TS_entry Tp_BOOLEAN = new TS_entry("bool", null,  ClasseID.TipoBase);
   public static TS_entry Tp_ERRO = new TS_entry("_erro_", null,  ClasseID.TipoBase);
-
-  public static final int ARRAY = 1500;
+  
   public static final int ATRIB = 1600;
 
   private String currEscopo;
@@ -149,8 +177,8 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
     //
     ts.insert(Tp_ERRO);
     ts.insert(Tp_INT);
-    ts.insert(Tp_DOUBLE);
-    ts.insert(Tp_BOOL);
+    ts.insert(Tp_ARRAYINT);
+    ts.insert(Tp_BOOLEAN);
     
 
   }  
@@ -190,9 +218,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
        
          switch ( operador ) {
               case ATRIB:
-                    if ( (A == Tp_INT && B == Tp_INT)                        ||
-                         ((A == Tp_DOUBLE && (B == Tp_INT || B == Tp_DOUBLE))) ||
-                         (A == B) )
+                    if ( (A == Tp_INT && B == Tp_INT) || (A == B) )
                          return A;
                      else
                          yyerror("(sem) tipos incomp. para atribuicao: "+ A.getTipoStr() + " = "+B.getTipoStr());
@@ -201,15 +227,14 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
               case '+' :
                     if ( A == Tp_INT && B == Tp_INT)
                           return Tp_INT;
-                    else if ( (A == Tp_DOUBLE && (B == Tp_INT || B == Tp_DOUBLE)) ||
-                                            (B == Tp_DOUBLE && (A == Tp_INT || A == Tp_DOUBLE)) ) 
-                         return Tp_DOUBLE;     
+                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                         return Tp_ARRAYINT;     
                     else
                         yyerror("(sem) tipos incomp. para soma: "+ A.getTipoStr() + " + "+B.getTipoStr());
                     break;
 
              case '>' :
-                     if ((A == Tp_INT || A == Tp_DOUBLE) && (B == Tp_INT || B == Tp_DOUBLE))
+                     if (A == Tp_INT && B == Tp_INT)
                          return Tp_BOOL;
                       else
                         yyerror("(sem) tipos incomp. para op relacional: "+ A.getTipoStr() + " > "+B.getTipoStr());
