@@ -42,7 +42,11 @@ ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclara
                                                                                                     }
 ;
 
-Extends: EXTENDS IDENT
+Extends: EXTENDS IDENT  {  TS_entry nodo = ts.pesquisa($2);
+                            if (nodo == null) 
+                              yyerror("ident >" + $2 + "< nao declarado");
+                            else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                        }
 |
 ;
 
@@ -77,54 +81,67 @@ DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entr
                                                                             yyerror("variavel >" + $4 + "< jah declarada");
                                                                           else ts.insert(new TS_entry($4, (TS_entry)$3, currClass)); 
                                                                       }
-| Type IDENT      { TS_entry nodo = ts.pesquisa($2);
-                    if (nodo != null) 
-                      yyerror("variavel >" + $2 + "< jah declarada");
-                    else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                  }
+| Type IDENT  { TS_entry nodo = ts.pesquisa($2);
+                if (nodo != null) 
+                  yyerror("variavel >" + $2 + "< jah declarada");
+                else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+              }
 ;
 
 StatementRepetition: StatementRepetition Statement
 |
 ;
 
-Type: INT '[' ']' { $$ = Tp_ARRAYINT; }
-| BOOLEAN { $$ = Tp_BOOLEAN; }
-| INT { $$ = Tp_INT; }
-| IDENT { TS_entry nodo = ts.pesquisa($1);
-                if (nodo == null ) 
-                   yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
-                else 
-                    $$ = nodo;
-               } 
+Type: INT '[' ']'   //TODO
+| BOOLEAN           { $$ = Tp_BOOLEAN; }
+| INT               { $$ = Tp_INT; }
+| IDENT             { TS_entry nodo = ts.pesquisa($1);
+                        if (nodo == null ) 
+                          yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
+                        else 
+                          $$ = nodo;
+                    } 
 ;
 
 Statement: '{' StatementRepetition '}'
-| IF '(' Expression ')' Statement ELSE Statement
-| WHILE '(' Expression ')' Statement
+| IF '(' Expression ')' Statement ELSE Statement  { if ( ((TS_entry)$3) != Tp_BOOL) 
+                                                      yyerror("(sem) expressão (if) deve ser lógica "+((TS_entry)$3).getTipo());
+                                                  } 
+| WHILE '(' Expression ')' Statement              { if ( ((TS_entry)$3) != Tp_BOOL) 
+                                                      yyerror("(sem) expressão (if) deve ser lógica "+((TS_entry)$3).getTipo());
+                                                  }
 | PRINT '(' Expression ')' ';'
-| IDENT '=' Expression ';'
-| IDENT '[' Expression ']' '=' Expression ';'
+| IDENT '=' Expression ';'                        {  $$ = validaTipo(ATRIB, (TS_entry)$1, (TS_entry)$3);  } 
+| IDENT '[' Expression ']' '=' Expression ';'     //TODO
 ;
 
-Expression: Expression AND Expression 
-| Expression '+' Expression 
-| Expression '-' Expression 
-| Expression '*' Expression 
-| Expression '<' Expression
-| Expression '[' Expression ']'
-| Expression '.' LENGTH
-| Expression '.' IDENT '(' ')'
-| Expression '.' IDENT '(' ExpressionRepetition ')'
-| NUM
-| TRUE
-| FALSE
-| IDENT
+Expression: Expression AND Expression                     { $$ = validaTipo(AND, (TS_entry)$1, (TS_entry)$3); } 
+| Expression '+' Expression                               { $$ = validaTipo('+', (TS_entry)$1, (TS_entry)$3); }
+| Expression '-' Expression                               { $$ = validaTipo('-', (TS_entry)$1, (TS_entry)$3); }
+| Expression '*' Expression                               { $$ = validaTipo('*', (TS_entry)$1, (TS_entry)$3); }
+| Expression '<' Expression                               { $$ = validaTipo('<', (TS_entry)$1, (TS_entry)$3); }
+| Expression '[' Expression ']'                           //TODO
+| Expression '.' LENGTH                                   { $$ = Tp_INT; }
+| Expression '.' IDENT '(' ')'                            //TODO
+| Expression '.' IDENT '(' ExpressionRepetition ')'       //TODO
+| NUM                                                     { $$ = Tp_INT; }
+| TRUE                                                    { $$ = Tp_BOOLEAN; }
+| FALSE                                                   { $$ = Tp_BOOLEAN; }
+| IDENT                                                   { TS_entry nodo = ts.pesquisa($1);
+                                                            if (nodo == null ) 
+                                                              yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
+                                                            else 
+                                                              $$ = nodo;
+                                                          }
 | THIS
-| NEW INT '[' Expression ']'
-| NEW IDENT '(' ')'
-| '!' Expression
-| '(' Expression ')'
+| NEW INT '[' Expression ']'                              //TODO
+| NEW IDENT '(' ')'                                       {  TS_entry nodo = ts.pesquisa($2);
+                                                            if (nodo != null) 
+                                                              yyerror("variavel >" + $2 + "< jah declarada");
+                                                            else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                                                          }
+| '!' Expression                                          { $$ = Tp_BOOLEAN; }
+| '(' Expression ')'                                      { $$ = $2; }
 ;
 
 ExpressionRepetition: ExpressionRepetition ',' Expression
@@ -218,7 +235,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
        
          switch ( operador ) {
               case ATRIB:
-                    if ( (A == Tp_INT && B == Tp_INT) || (A == B) )
+                    if ( A == B )
                          return A;
                      else
                          yyerror("(sem) tipos incomp. para atribuicao: "+ A.getTipoStr() + " = "+B.getTipoStr());
@@ -233,8 +250,26 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
                         yyerror("(sem) tipos incomp. para soma: "+ A.getTipoStr() + " + "+B.getTipoStr());
                     break;
 
-             case '>' :
-                     if (A == Tp_INT && B == Tp_INT)
+              case '-' :
+                    if ( A == Tp_INT && B == Tp_INT)
+                          return Tp_INT;
+                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                         return Tp_ARRAYINT;     
+                    else
+                        yyerror("(sem) tipos incomp. para subtracao: "+ A.getTipoStr() + " + "+B.getTipoStr());
+                    break;
+
+              case '*' :
+                    if ( A == Tp_INT && B == Tp_INT)
+                          return Tp_INT;
+                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                         return Tp_ARRAYINT;     
+                    else
+                        yyerror("(sem) tipos incomp. para multiplicacao: "+ A.getTipoStr() + " + "+B.getTipoStr());
+                    break;
+
+             case '<' :
+                     if ((A == Tp_INT && B == Tp_INT) || (A == Tp_ARRAYINT && B == Tp_ARRAYINT))
                          return Tp_BOOL;
                       else
                         yyerror("(sem) tipos incomp. para op relacional: "+ A.getTipoStr() + " > "+B.getTipoStr());
