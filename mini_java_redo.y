@@ -81,67 +81,95 @@ DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entr
                                                                             yyerror("variavel >" + $4 + "< jah declarada");
                                                                           else ts.insert(new TS_entry($4, (TS_entry)$3, currClass)); 
                                                                       }
-| Type IDENT  { TS_entry nodo = ts.pesquisa($2);
-                if (nodo != null) 
-                  yyerror("variavel >" + $2 + "< jah declarada");
-                else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-              }
+| Type IDENT                                        { TS_entry nodo = ts.pesquisa($2);
+                                                      if (nodo != null) 
+                                                        yyerror("variavel >" + $2 + "< jah declarada");
+                                                      else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                                                    }
 ;
 
 StatementRepetition: StatementRepetition Statement
 |
 ;
 
-Type: INT '[' ']'   //TODO
-| BOOLEAN           { $$ = Tp_BOOLEAN; }
-| INT               { $$ = Tp_INT; }
-| IDENT             { TS_entry nodo = ts.pesquisa($1);
-                        if (nodo == null ) 
-                          yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
-                        else 
-                          $$ = nodo;
-                    } 
+Type: INT '[' ']'                                   { $$ = Tp_ARRAYINT; }
+| BOOLEAN                                           { $$ = Tp_BOOLEAN; }
+| INT                                               { $$ = Tp_INT; }
+| IDENT                                             { TS_entry nodo = ts.pesquisa($1);
+                                                        if (nodo == null ) 
+                                                          yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
+                                                        else 
+                                                          $$ = nodo;
+                                                    } 
 ;
 
 Statement: '{' StatementRepetition '}'
-| IF '(' Expression ')' Statement ELSE Statement  { if ( ((TS_entry)$3) != Tp_BOOL) 
-                                                      yyerror("(sem) expressão (if) deve ser lógica "+((TS_entry)$3).getTipo());
-                                                  } 
-| WHILE '(' Expression ')' Statement              { if ( ((TS_entry)$3) != Tp_BOOL) 
-                                                      yyerror("(sem) expressão (if) deve ser lógica "+((TS_entry)$3).getTipo());
-                                                  }
-| PRINT '(' Expression ')' ';'
-| IDENT '=' Expression ';'                        {  $$ = validaTipo(ATRIB, (TS_entry)$1, (TS_entry)$3);  } 
-| IDENT '[' Expression ']' '=' Expression ';'     //TODO
+| IF '(' Expression ')' Statement ELSE Statement    { if ( ((TS_entry)$3) != Tp_BOOL) 
+                                                        yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3).getTipo());
+                                                    } 
+| WHILE '(' Expression ')' Statement                { if ( ((TS_entry)$3) != Tp_BOOL) 
+                                                        yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3).getTipo());
+                                                    }
+| PRINT '(' Expression ')' ';' 
+| IDENT '=' Expression ';'                          { $$ = validaTipo(ATRIB, (TS_entry)$1, (TS_entry)$3);  } 
+| IDENT '[' Expression ']' '=' Expression ';'       { if ((TS_entry)$1 != Tp_ARRAYINT) 
+                                                        yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
+                                                      if ( ((TS_entry)$3) != Tp_INT) 
+                                                        yyerror("a posicao do array deve ser um inteiro "+((TS_entry)$3).getTipo());
+                                                      $$ = validaTipo(ATRIB, Tp_INT, (TS_entry)$6);
+                                                    }
 ;
 
-Expression: Expression AND Expression                     { $$ = validaTipo(AND, (TS_entry)$1, (TS_entry)$3); } 
-| Expression '+' Expression                               { $$ = validaTipo('+', (TS_entry)$1, (TS_entry)$3); }
-| Expression '-' Expression                               { $$ = validaTipo('-', (TS_entry)$1, (TS_entry)$3); }
-| Expression '*' Expression                               { $$ = validaTipo('*', (TS_entry)$1, (TS_entry)$3); }
-| Expression '<' Expression                               { $$ = validaTipo('<', (TS_entry)$1, (TS_entry)$3); }
-| Expression '[' Expression ']'                           //TODO
-| Expression '.' LENGTH                                   { $$ = Tp_INT; }
-| Expression '.' IDENT '(' ')'                            //TODO
-| Expression '.' IDENT '(' ExpressionRepetition ')'       //TODO
-| NUM                                                     { $$ = Tp_INT; }
-| TRUE                                                    { $$ = Tp_BOOLEAN; }
-| FALSE                                                   { $$ = Tp_BOOLEAN; }
-| IDENT                                                   { TS_entry nodo = ts.pesquisa($1);
-                                                            if (nodo == null ) 
-                                                              yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
-                                                            else 
-                                                              $$ = nodo;
-                                                          }
+Expression: Expression AND Expression                       { $$ = validaTipo(AND, (TS_entry)$1, (TS_entry)$3); } 
+| Expression '+' Expression                                 { $$ = validaTipo('+', (TS_entry)$1, (TS_entry)$3); }
+| Expression '-' Expression                                 { $$ = validaTipo('-', (TS_entry)$1, (TS_entry)$3); }
+| Expression '*' Expression                                 { $$ = validaTipo('*', (TS_entry)$1, (TS_entry)$3); }
+| Expression '<' Expression                                 { $$ = validaTipo('<', (TS_entry)$1, (TS_entry)$3); }
+| IDENT '[' Expression ']'                                  { if ((TS_entry)$1 != Tp_ARRAYINT) 
+                                                                yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
+                                                              if ( ((TS_entry)$3) != Tp_INT) 
+                                                                yyerror("a posição do array deve ser um inteiro "+((TS_entry)$3).getTipo());
+                                                            }
+| IDENT '.' LENGTH                                          { if ((TS_entry)$1 != Tp_ARRAYINT) 
+                                                                yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
+                                                              $$ = Tp_INT; 
+                                                            }
+| IDENT '.' IDENT '(' ')'                                   { TS_entry classe = ts.pesquisa($1);
+                                                              if (classe == null) 
+                                                                yyerror("classe >" + $1 + "< nao declarada");
+                                                              TS_entry func = ts.pesquisa($3)
+                                                              else if (func == null){
+                                                                yyerror("funcao >" + $3 + "< nao declarada");
+                                                              }
+                                                            }
+| IDENT '.' IDENT '(' ExpressionRepetition ')'              { TS_entry classe = ts.pesquisa($1);
+                                                              if (classe == null) 
+                                                                yyerror("classe >" + $1 + "< nao declarada");
+                                                              TS_entry func = ts.pesquisa($3)
+                                                              else if (func == null){
+                                                                yyerror("funcao >" + $3 + "< nao declarada");
+                                                              }
+                                                            }
+| NUM                                                       { $$ = Tp_INT; }
+| TRUE                                                      { $$ = Tp_BOOLEAN; }
+| FALSE                                                     { $$ = Tp_BOOLEAN; }
+| IDENT                                                     { TS_entry nodo = ts.pesquisa($1);
+                                                              if (nodo == null ) 
+                                                                yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
+                                                              else 
+                                                                $$ = nodo;
+                                                            }
 | THIS
-| NEW INT '[' Expression ']'                              //TODO
-| NEW IDENT '(' ')'                                       {  TS_entry nodo = ts.pesquisa($2);
-                                                            if (nodo != null) 
-                                                              yyerror("variavel >" + $2 + "< jah declarada");
-                                                            else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                                                          }
-| '!' Expression                                          { $$ = Tp_BOOLEAN; }
-| '(' Expression ')'                                      { $$ = $2; }
+| NEW INT '[' Expression ']'                                { if ((TS_entry)$4 != Tp_INT) 
+                                                                yyerror("posicao do array deve ser um inteiro "+((TS_entry)$1).getTipo());
+                                                            }
+| NEW IDENT '(' ')'                                         {  TS_entry nodo = ts.pesquisa($2);
+                                                              if (nodo != null) 
+                                                                yyerror("variavel >" + $2 + "< jah declarada");
+                                                              else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
+                                                            }
+| '!' Expression                                            { $$ = Tp_BOOLEAN; }
+| '(' Expression ')'                                        { $$ = $2; }
 ;
 
 ExpressionRepetition: ExpressionRepetition ',' Expression
