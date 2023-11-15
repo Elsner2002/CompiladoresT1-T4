@@ -48,10 +48,10 @@
   32             | Expression '-' Expression
   33             | Expression '*' Expression
   34             | Expression '<' Expression
-  35             | Expression '[' Expression ']'
-  36             | Expression '.' LENGTH
-  37             | Expression '.' IDENT '(' ')'
-  38             | Expression '.' IDENT '(' ExpressionRepetition ')'
+  35             | IDENT '[' Expression ']'
+  36             | IDENT '.' LENGTH
+  37             | IDENT '.' IDENT '(' ')'
+  38             | IDENT '.' IDENT '(' ExpressionRepetition ')'
   39             | NUM
   40             | TRUE
   41             | FALSE
@@ -626,9 +626,23 @@ state 64
 
 
 state 65
+	Expression : IDENT . '[' Expression ']'  (35)
+	Expression : IDENT . '.' LENGTH  (36)
+	Expression : IDENT . '.' IDENT '(' ')'  (37)
+	Expression : IDENT . '.' IDENT '(' ExpressionRepetition ')'  (38)
 	Expression : IDENT .  (42)
 
-	.  reduce 42
+	'.'  shift 82
+	'['  shift 83
+	AND  reduce 42
+	';'  reduce 42
+	','  reduce 42
+	'<'  reduce 42
+	'-'  reduce 42
+	'+'  reduce 42
+	'*'  reduce 42
+	')'  reduce 42
+	']'  reduce 42
 
 
 state 66
@@ -653,8 +667,8 @@ state 69
 	Expression : NEW . INT '[' Expression ']'  (44)
 	Expression : NEW . IDENT '(' ')'  (45)
 
-	INT  shift 82
-	IDENT  shift 83
+	INT  shift 84
+	IDENT  shift 85
 	.  error
 
 
@@ -677,7 +691,7 @@ state 71
 	'('  shift 72
 	.  error
 
-	Expression  goto 84
+	Expression  goto 86
 
 
 state 72
@@ -693,7 +707,7 @@ state 72
 	'('  shift 72
 	.  error
 
-	Expression  goto 85
+	Expression  goto 87
 
 
 state 73
@@ -703,19 +717,13 @@ state 73
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
-	';'  shift 87
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	AND  shift 88
+	';'  shift 89
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	.  error
 
 
@@ -726,18 +734,12 @@ state 74
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	']'  shift 94
 	.  error
 
@@ -749,19 +751,13 @@ state 75
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	')'  shift 95
-	'['  shift 93
 	.  error
 
 
@@ -772,19 +768,13 @@ state 76
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	')'  shift 96
-	'['  shift 93
 	.  error
 
 
@@ -795,19 +785,13 @@ state 77
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	')'  shift 97
-	'['  shift 93
 	.  error
 
 
@@ -845,123 +829,75 @@ state 81
 
 
 state 82
-	Expression : NEW INT . '[' Expression ']'  (44)
+	Expression : IDENT '.' . LENGTH  (36)
+	Expression : IDENT '.' . IDENT '(' ')'  (37)
+	Expression : IDENT '.' . IDENT '(' ExpressionRepetition ')'  (38)
 
-	'['  shift 99
+	IDENT  shift 99
+	LENGTH  shift 100
 	.  error
 
 
 state 83
-	Expression : NEW IDENT . '(' ')'  (45)
+	Expression : IDENT '[' . Expression ']'  (35)
 
-	'('  shift 100
+	IDENT  shift 65
+	NUM  shift 66
+	TRUE  shift 67
+	FALSE  shift 68
+	NEW  shift 69
+	THIS  shift 70
+	'!'  shift 71
+	'('  shift 72
 	.  error
+
+	Expression  goto 101
 
 
 state 84
-	Expression : Expression . AND Expression  (30)
-	Expression : Expression . '+' Expression  (31)
-	Expression : Expression . '-' Expression  (32)
-	Expression : Expression . '*' Expression  (33)
-	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
-	Expression : '!' Expression .  (46)
+	Expression : NEW INT . '[' Expression ']'  (44)
 
-	'.'  shift 92
-	'['  shift 93
-	AND  reduce 46
-	';'  reduce 46
-	','  reduce 46
-	'<'  reduce 46
-	'-'  reduce 46
-	'+'  reduce 46
-	'*'  reduce 46
-	')'  reduce 46
-	']'  reduce 46
+	'['  shift 102
+	.  error
 
 
 state 85
-	Expression : Expression . AND Expression  (30)
-	Expression : Expression . '+' Expression  (31)
-	Expression : Expression . '-' Expression  (32)
-	Expression : Expression . '*' Expression  (33)
-	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
-	Expression : '(' Expression . ')'  (47)
+	Expression : NEW IDENT . '(' ')'  (45)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	')'  shift 101
-	'['  shift 93
+	'('  shift 103
 	.  error
 
 
 state 86
-	Expression : Expression AND . Expression  (30)
+	Expression : Expression . AND Expression  (30)
+	Expression : Expression . '+' Expression  (31)
+	Expression : Expression . '-' Expression  (32)
+	Expression : Expression . '*' Expression  (33)
+	Expression : Expression . '<' Expression  (34)
+	Expression : '!' Expression .  (46)
 
-	IDENT  shift 65
-	NUM  shift 66
-	TRUE  shift 67
-	FALSE  shift 68
-	NEW  shift 69
-	THIS  shift 70
-	'!'  shift 71
-	'('  shift 72
-	.  error
-
-	Expression  goto 102
+	.  reduce 46
 
 
 state 87
-	Statement : IDENT '=' Expression ';' .  (28)
+	Expression : Expression . AND Expression  (30)
+	Expression : Expression . '+' Expression  (31)
+	Expression : Expression . '-' Expression  (32)
+	Expression : Expression . '*' Expression  (33)
+	Expression : Expression . '<' Expression  (34)
+	Expression : '(' Expression . ')'  (47)
 
-	.  reduce 28
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
+	')'  shift 104
+	.  error
 
 
 state 88
-	Expression : Expression '<' . Expression  (34)
-
-	IDENT  shift 65
-	NUM  shift 66
-	TRUE  shift 67
-	FALSE  shift 68
-	NEW  shift 69
-	THIS  shift 70
-	'!'  shift 71
-	'('  shift 72
-	.  error
-
-	Expression  goto 103
-
-
-state 89
-	Expression : Expression '-' . Expression  (32)
-
-	IDENT  shift 65
-	NUM  shift 66
-	TRUE  shift 67
-	FALSE  shift 68
-	NEW  shift 69
-	THIS  shift 70
-	'!'  shift 71
-	'('  shift 72
-	.  error
-
-	Expression  goto 104
-
-
-state 90
-	Expression : Expression '+' . Expression  (31)
+	Expression : Expression AND . Expression  (30)
 
 	IDENT  shift 65
 	NUM  shift 66
@@ -976,8 +912,14 @@ state 90
 	Expression  goto 105
 
 
-state 91
-	Expression : Expression '*' . Expression  (33)
+state 89
+	Statement : IDENT '=' Expression ';' .  (28)
+
+	.  reduce 28
+
+
+state 90
+	Expression : Expression '<' . Expression  (34)
 
 	IDENT  shift 65
 	NUM  shift 66
@@ -992,18 +934,40 @@ state 91
 	Expression  goto 106
 
 
-state 92
-	Expression : Expression '.' . LENGTH  (36)
-	Expression : Expression '.' . IDENT '(' ')'  (37)
-	Expression : Expression '.' . IDENT '(' ExpressionRepetition ')'  (38)
+state 91
+	Expression : Expression '-' . Expression  (32)
 
-	IDENT  shift 107
-	LENGTH  shift 108
+	IDENT  shift 65
+	NUM  shift 66
+	TRUE  shift 67
+	FALSE  shift 68
+	NEW  shift 69
+	THIS  shift 70
+	'!'  shift 71
+	'('  shift 72
 	.  error
+
+	Expression  goto 107
+
+
+state 92
+	Expression : Expression '+' . Expression  (31)
+
+	IDENT  shift 65
+	NUM  shift 66
+	TRUE  shift 67
+	FALSE  shift 68
+	NEW  shift 69
+	THIS  shift 70
+	'!'  shift 71
+	'('  shift 72
+	.  error
+
+	Expression  goto 108
 
 
 state 93
-	Expression : Expression '[' . Expression ']'  (35)
+	Expression : Expression '*' . Expression  (33)
 
 	IDENT  shift 65
 	NUM  shift 66
@@ -1075,6 +1039,37 @@ state 98
 
 
 state 99
+	Expression : IDENT '.' IDENT . '(' ')'  (37)
+	Expression : IDENT '.' IDENT . '(' ExpressionRepetition ')'  (38)
+
+	'('  shift 115
+	.  error
+
+
+state 100
+	Expression : IDENT '.' LENGTH .  (36)
+
+	.  reduce 36
+
+
+state 101
+	Expression : Expression . AND Expression  (30)
+	Expression : Expression . '+' Expression  (31)
+	Expression : Expression . '-' Expression  (32)
+	Expression : Expression . '*' Expression  (33)
+	Expression : Expression . '<' Expression  (34)
+	Expression : IDENT '[' Expression . ']'  (35)
+
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
+	']'  shift 116
+	.  error
+
+
+state 102
 	Expression : NEW INT '[' . Expression ']'  (44)
 
 	IDENT  shift 65
@@ -1087,40 +1082,34 @@ state 99
 	'('  shift 72
 	.  error
 
-	Expression  goto 115
+	Expression  goto 117
 
 
-state 100
+state 103
 	Expression : NEW IDENT '(' . ')'  (45)
 
-	')'  shift 116
+	')'  shift 118
 	.  error
 
 
-state 101
+state 104
 	Expression : '(' Expression ')' .  (47)
 
 	.  reduce 47
 
 
-state 102
+state 105
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression AND Expression .  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	AND  reduce 30
 	';'  reduce 30
 	','  reduce 30
@@ -1128,23 +1117,17 @@ state 102
 	']'  reduce 30
 
 
-state 103
+state 106
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
 	Expression : Expression '<' Expression .  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	AND  reduce 34
 	';'  reduce 34
 	','  reduce 34
@@ -1152,21 +1135,15 @@ state 103
 	']'  reduce 34
 
 
-state 104
+state 107
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression '-' Expression .  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'*'  shift 93
 	AND  reduce 32
 	';'  reduce 32
 	','  reduce 32
@@ -1177,21 +1154,15 @@ state 104
 	']'  reduce 32
 
 
-state 105
+state 108
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression '+' Expression .  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'*'  shift 93
 	AND  reduce 31
 	';'  reduce 31
 	','  reduce 31
@@ -1202,66 +1173,15 @@ state 105
 	']'  reduce 31
 
 
-state 106
+state 109
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression '*' Expression .  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	'.'  shift 92
-	'['  shift 93
-	AND  reduce 33
-	';'  reduce 33
-	','  reduce 33
-	'<'  reduce 33
-	'-'  reduce 33
-	'+'  reduce 33
-	'*'  reduce 33
-	')'  reduce 33
-	']'  reduce 33
-
-
-state 107
-	Expression : Expression '.' IDENT . '(' ')'  (37)
-	Expression : Expression '.' IDENT . '(' ExpressionRepetition ')'  (38)
-
-	'('  shift 117
-	.  error
-
-
-state 108
-	Expression : Expression '.' LENGTH .  (36)
-
-	.  reduce 36
-
-
-state 109
-	Expression : Expression . AND Expression  (30)
-	Expression : Expression . '+' Expression  (31)
-	Expression : Expression . '-' Expression  (32)
-	Expression : Expression . '*' Expression  (33)
-	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression '[' Expression . ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
-
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
-	']'  shift 118
-	.  error
+	.  reduce 33
 
 
 state 110
@@ -1306,54 +1226,19 @@ state 114
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
+	AND  shift 88
 	';'  shift 121
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	.  error
 
 
 state 115
-	Expression : Expression . AND Expression  (30)
-	Expression : Expression . '+' Expression  (31)
-	Expression : Expression . '-' Expression  (32)
-	Expression : Expression . '*' Expression  (33)
-	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
-	Expression : NEW INT '[' Expression . ']'  (44)
-
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
-	']'  shift 122
-	.  error
-
-
-state 116
-	Expression : NEW IDENT '(' ')' .  (45)
-
-	.  reduce 45
-
-
-state 117
-	Expression : Expression '.' IDENT '(' . ')'  (37)
-	Expression : Expression '.' IDENT '(' . ExpressionRepetition ')'  (38)
+	Expression : IDENT '.' IDENT '(' . ')'  (37)
+	Expression : IDENT '.' IDENT '(' . ExpressionRepetition ')'  (38)
 
 	IDENT  shift 65
 	NUM  shift 66
@@ -1363,17 +1248,40 @@ state 117
 	THIS  shift 70
 	'!'  shift 71
 	'('  shift 72
-	')'  shift 123
+	')'  shift 122
 	.  error
 
-	Expression  goto 124
-	ExpressionRepetition  goto 125
+	Expression  goto 123
+	ExpressionRepetition  goto 124
+
+
+state 116
+	Expression : IDENT '[' Expression ']' .  (35)
+
+	.  reduce 35
+
+
+state 117
+	Expression : Expression . AND Expression  (30)
+	Expression : Expression . '+' Expression  (31)
+	Expression : Expression . '-' Expression  (32)
+	Expression : Expression . '*' Expression  (33)
+	Expression : Expression . '<' Expression  (34)
+	Expression : NEW INT '[' Expression . ']'  (44)
+
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
+	']'  shift 125
+	.  error
 
 
 state 118
-	Expression : Expression '[' Expression ']' .  (35)
+	Expression : NEW IDENT '(' ')' .  (45)
 
-	.  reduce 35
+	.  reduce 45
 
 
 state 119
@@ -1383,19 +1291,13 @@ state 119
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 
-	AND  shift 86
+	AND  shift 88
 	';'  shift 126
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	.  error
 
 
@@ -1420,47 +1322,41 @@ state 121
 
 
 state 122
-	Expression : NEW INT '[' Expression ']' .  (44)
-
-	.  reduce 44
-
-
-state 123
-	Expression : Expression '.' IDENT '(' ')' .  (37)
+	Expression : IDENT '.' IDENT '(' ')' .  (37)
 
 	.  reduce 37
 
 
-state 124
+state 123
 	Expression : Expression . AND Expression  (30)
 	Expression : Expression . '+' Expression  (31)
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 	ExpressionRepetition : Expression .  (49)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	','  reduce 49
 	')'  reduce 49
 
 
-state 125
-	Expression : Expression '.' IDENT '(' ExpressionRepetition . ')'  (38)
+state 124
+	Expression : IDENT '.' IDENT '(' ExpressionRepetition . ')'  (38)
 	ExpressionRepetition : ExpressionRepetition . ',' Expression  (48)
 
 	','  shift 129
 	')'  shift 130
 	.  error
+
+
+state 125
+	Expression : NEW INT '[' Expression ']' .  (44)
+
+	.  reduce 44
 
 
 state 126
@@ -1498,7 +1394,7 @@ state 129
 
 
 state 130
-	Expression : Expression '.' IDENT '(' ExpressionRepetition ')' .  (38)
+	Expression : IDENT '.' IDENT '(' ExpressionRepetition ')' .  (38)
 
 	.  reduce 38
 
@@ -1509,19 +1405,13 @@ state 131
 	Expression : Expression . '-' Expression  (32)
 	Expression : Expression . '*' Expression  (33)
 	Expression : Expression . '<' Expression  (34)
-	Expression : Expression . '[' Expression ']'  (35)
-	Expression : Expression . '.' LENGTH  (36)
-	Expression : Expression . '.' IDENT '(' ')'  (37)
-	Expression : Expression . '.' IDENT '(' ExpressionRepetition ')'  (38)
 	ExpressionRepetition : ExpressionRepetition ',' Expression .  (48)
 
-	AND  shift 86
-	'<'  shift 88
-	'-'  shift 89
-	'+'  shift 90
-	'*'  shift 91
-	'.'  shift 92
-	'['  shift 93
+	AND  shift 88
+	'<'  shift 90
+	'-'  shift 91
+	'+'  shift 92
+	'*'  shift 93
 	','  reduce 48
 	')'  reduce 48
 

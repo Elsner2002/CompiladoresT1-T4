@@ -36,6 +36,9 @@ public static int STRING = 278;
 public static int COMMENT = 279;
 public static int AND = 280;
 
+  public int getLine() {
+      return yyline;
+  }
 
 %} 
 %integer

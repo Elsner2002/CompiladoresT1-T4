@@ -52,7 +52,7 @@ public class TS_entry
       if (tipo == null)  return "null"; 
       else if (tipo==Parser.Tp_INT)    return "int"; 
       else if (tipo==Parser.Tp_BOOL)   return "boolean"; 
-      else if (tipo==Parser.Tp_DOUBLE)  return "double";
+      else if (tipo==Parser.Tp_ARRAYINT)  return "int[]";
       else if (tipo==Parser.Tp_ERRO)  return  "_erro_";
       else                             return "erro/tp";
    }

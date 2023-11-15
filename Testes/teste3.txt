@@ -1,5 +1,7 @@
 class A { 
     public static void main ( String [ ] args ) { 
+        int x;
+        int y;
         {
             if ( x < y ) {
                 x = y;

@@ -24,29 +24,29 @@ import java.io.*;
 Goal: MainClass ClassDeclarationRepetition
 ;
 
-MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}' {  TS_entry nodo = ts.pesquisa($2);
-                                                                                                        if (nodo != null) 
-                                                                                                          yyerror("main class >" + $2 + "< jah declarada");
-                                                                                                        else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                                                                                                     }
+MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}' {  TS_entry nodo = ts.pesquisa($2.sval);
+   if (nodo != null) 
+     yyerror("main class >" + $2.sval + "< jah declarada");
+   else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
 ;
 
 ClassDeclarationRepetition: ClassDeclarationRepetition ClassDeclaration
 |
 ;
 
-ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclarationRepetition '}'  { TS_entry nodo = ts.pesquisa($2);
-                                                                                                      if (nodo != null) 
-                                                                                                        yyerror("classe >" + $2 + "< jah declarada");
-                                                                                                      else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                                                                                                    }
+ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclarationRepetition '}'  { TS_entry nodo = ts.pesquisa($2.sval);
+  if (nodo != null) 
+    yyerror("classe >" + $2.sval + "< jah declarada");
+  else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
 ;
 
-Extends: EXTENDS IDENT  {  TS_entry nodo = ts.pesquisa($2);
-                            if (nodo == null) 
-                              yyerror("ident >" + $2 + "< nao declarado");
-                            else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                        }
+Extends: EXTENDS IDENT  {  TS_entry nodo = ts.pesquisa($2.sval);
+    if (nodo == null) 
+      yyerror("ident >" + $2.sval + "< nao declarado");
+    else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
 |
 ;
 
@@ -58,118 +58,119 @@ MethodDeclarationRepetition: MethodDeclarationRepetition MethodDeclaration
 |
 ;
 
-VarDeclaration: Type IDENT ';'{  TS_entry nodo = ts.pesquisa($2);
-                                  if (nodo != null) 
-                                    yyerror("variavel >" + $2 + "< jah declarada");
-                                  else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                              }
+VarDeclaration: Type IDENT ';'{  TS_entry nodo = ts.pesquisa($2.sval);
+    if (nodo != null) 
+      yyerror("variavel >" + $2.sval + "< jah declarada");
+    else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
 ;
 
-MethodDeclaration: PUBLIC Type IDENT '(' DeclarationTypes ')' VarDeclarationRepetition '{' StatementRepetition RETURN Expression ';' '}' {  TS_entry nodo = ts.pesquisa($3);
-                                                                                                                                            if (nodo != null) 
-                                                                                                                                              yyerror("metodo >" + $3 + "< jah declarado");
-                                                                                                                                            else ts.insert(new TS_entry($3, (TS_entry)$2, currClass)); 
-                                                                                                                                          }
+MethodDeclaration: PUBLIC Type IDENT '(' DeclarationTypes ')' VarDeclarationRepetition '{' StatementRepetition RETURN Expression ';' '}' {  TS_entry nodo = ts.pesquisa($3.sval);
+  if (nodo != null) 
+    yyerror("metodo >" + $3.sval + "< jah declarado");
+  else ts.insert(new TS_entry($3.sval, (TS_entry)$2.obj, currClass)); 
+}
 ;
 
 DeclarationTypes: DeclarationTypesRepetition
 |
 ;
 
-DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entry nodo = ts.pesquisa($4);
-                                                                          if (nodo != null) 
-                                                                            yyerror("variavel >" + $4 + "< jah declarada");
-                                                                          else ts.insert(new TS_entry($4, (TS_entry)$3, currClass)); 
-                                                                      }
-| Type IDENT                                        { TS_entry nodo = ts.pesquisa($2);
-                                                      if (nodo != null) 
-                                                        yyerror("variavel >" + $2 + "< jah declarada");
-                                                      else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                                                    }
+DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entry nodo = ts.pesquisa($4.sval);
+    if (nodo != null) 
+      yyerror("variavel >" + $4.sval + "< jah declarada");
+    else ts.insert(new TS_entry($4.sval, (TS_entry)$3.obj, currClass)); 
+}
+| Type IDENT { TS_entry nodo = ts.pesquisa($2.sval);
+  if (nodo != null) 
+    yyerror("variavel >" + $2.sval + "< jah declarada");
+  else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
 ;
 
 StatementRepetition: StatementRepetition Statement
 |
 ;
 
-Type: INT '[' ']'                                   { $$ = Tp_ARRAYINT; }
-| BOOLEAN                                           { $$ = Tp_BOOLEAN; }
-| INT                                               { $$ = Tp_INT; }
-| IDENT                                             { TS_entry nodo = ts.pesquisa($1);
-                                                        if (nodo == null ) 
-                                                          yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
-                                                        else 
-                                                          $$ = nodo;
-                                                    } 
+Type: INT '[' ']' { $$.obj = Tp_ARRAYINT; }
+| BOOLEAN { $$.obj = Tp_BOOL; }
+| INT  { $$.obj = Tp_INT; }
+| IDENT { TS_entry nodo = ts.pesquisa($1.sval);
+ if (nodo == null ) 
+   yyerror("(sem) Nome de tipo <" + $1.sval + "> nao declarado ");
+ else 
+   $$.obj = nodo;
+} 
 ;
 
 Statement: '{' StatementRepetition '}'
-| IF '(' Expression ')' Statement ELSE Statement    { if ( ((TS_entry)$3) != Tp_BOOL) 
-                                                        yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3).getTipo());
-                                                    } 
-| WHILE '(' Expression ')' Statement                { if ( ((TS_entry)$3) != Tp_BOOL) 
-                                                        yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3).getTipo());
-                                                    }
+| IF '(' Expression ')' Statement ELSE Statement  { if ( ((TS_entry)$3.obj) != Tp_BOOL) 
+    yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3.obj).getTipo());
+} 
+| WHILE '(' Expression ')' Statement  { if ( ((TS_entry)$3.obj) != Tp_BOOL) 
+    yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3.obj).getTipo());
+}
 | PRINT '(' Expression ')' ';' 
-| IDENT '=' Expression ';'                          { $$ = validaTipo(ATRIB, (TS_entry)$1, (TS_entry)$3);  } 
-| IDENT '[' Expression ']' '=' Expression ';'       { if ((TS_entry)$1 != Tp_ARRAYINT) 
-                                                        yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
-                                                      if ( ((TS_entry)$3) != Tp_INT) 
-                                                        yyerror("a posicao do array deve ser um inteiro "+((TS_entry)$3).getTipo());
-                                                      $$ = validaTipo(ATRIB, Tp_INT, (TS_entry)$6);
-                                                    }
+| IDENT '=' Expression ';'  { $$.obj = validaTipo(ATRIB, (TS_entry)$1.obj, (TS_entry)$3.obj);  } 
+| IDENT '[' Expression ']' '=' Expression ';' { if ((TS_entry)$1.obj != Tp_ARRAYINT) 
+    yyerror("expressao deve ser um array "+((TS_entry)$1.obj).getTipo());
+  if ( ((TS_entry)$3.obj) != Tp_INT) 
+    yyerror("a posicao do array deve ser um inteiro "+((TS_entry)$3.obj).getTipo());
+  $$.obj = validaTipo(ATRIB, Tp_INT, (TS_entry)$6.obj);
+}
 ;
 
-Expression: Expression AND Expression                       { $$ = validaTipo(AND, (TS_entry)$1, (TS_entry)$3); } 
-| Expression '+' Expression                                 { $$ = validaTipo('+', (TS_entry)$1, (TS_entry)$3); }
-| Expression '-' Expression                                 { $$ = validaTipo('-', (TS_entry)$1, (TS_entry)$3); }
-| Expression '*' Expression                                 { $$ = validaTipo('*', (TS_entry)$1, (TS_entry)$3); }
-| Expression '<' Expression                                 { $$ = validaTipo('<', (TS_entry)$1, (TS_entry)$3); }
-| IDENT '[' Expression ']'                                  { if ((TS_entry)$1 != Tp_ARRAYINT) 
-                                                                yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
-                                                              if ( ((TS_entry)$3) != Tp_INT) 
-                                                                yyerror("a posição do array deve ser um inteiro "+((TS_entry)$3).getTipo());
-                                                            }
-| IDENT '.' LENGTH                                          { if ((TS_entry)$1 != Tp_ARRAYINT) 
-                                                                yyerror("expressao deve ser um array "+((TS_entry)$1).getTipo());
-                                                              $$ = Tp_INT; 
-                                                            }
-| IDENT '.' IDENT '(' ')'                                   { TS_entry classe = ts.pesquisa($1);
-                                                              if (classe == null) 
-                                                                yyerror("classe >" + $1 + "< nao declarada");
-                                                              TS_entry func = ts.pesquisa($3)
-                                                              else if (func == null){
-                                                                yyerror("funcao >" + $3 + "< nao declarada");
-                                                              }
-                                                            }
-| IDENT '.' IDENT '(' ExpressionRepetition ')'              { TS_entry classe = ts.pesquisa($1);
-                                                              if (classe == null) 
-                                                                yyerror("classe >" + $1 + "< nao declarada");
-                                                              TS_entry func = ts.pesquisa($3)
-                                                              else if (func == null){
-                                                                yyerror("funcao >" + $3 + "< nao declarada");
-                                                              }
-                                                            }
-| NUM                                                       { $$ = Tp_INT; }
-| TRUE                                                      { $$ = Tp_BOOLEAN; }
-| FALSE                                                     { $$ = Tp_BOOLEAN; }
-| IDENT                                                     { TS_entry nodo = ts.pesquisa($1);
-                                                              if (nodo == null ) 
-                                                                yyerror("(sem) Nome de tipo <" + $1 + "> nao declarado ");
-                                                              else 
-                                                                $$ = nodo;
-                                                            }
+Expression: Expression AND Expression  { $$.obj = validaTipo(AND, (TS_entry)$1.obj, (TS_entry)$3.obj); } 
+| Expression '+' Expression    { $$.obj = validaTipo('+', (TS_entry)$1.obj, (TS_entry)$3.obj); }
+| Expression '-' Expression    { $$.obj = validaTipo('-', (TS_entry)$1.obj, (TS_entry)$3.obj); }
+| Expression '*' Expression    { $$.obj = validaTipo('*', (TS_entry)$1.obj, (TS_entry)$3.obj); }
+| Expression '<' Expression    { $$.obj = validaTipo('<', (TS_entry)$1.obj, (TS_entry)$3.obj); }
+| IDENT '[' Expression ']'     { if ((TS_entry)$1.obj != Tp_ARRAYINT) 
+    yyerror("expressao deve ser um array "+((TS_entry)$1.obj).getTipo());
+  if ( ((TS_entry)$3.obj) != Tp_INT) 
+    yyerror("a posição do array deve ser um inteiro "+((TS_entry)$3.obj).getTipo());
+}
+| IDENT '.' LENGTH  { if ((TS_entry)$1.obj != Tp_ARRAYINT) 
+    yyerror("expressao deve ser um array "+((TS_entry)$1.obj).getTipo());
+  $$.obj = Tp_INT; 
+}
+| IDENT '.' IDENT '(' ')' { TS_entry classe = ts.pesquisa($1.sval);
+  if (classe == null) 
+    yyerror("classe >" + $1.sval + "< nao declarada");
+  TS_entry func = ts.pesquisa($3.sval);
+  if (func == null)
+    yyerror("funcao >" + $3.sval + "< nao declarada");
+}
+| IDENT '.' IDENT '(' ExpressionRepetition ')'  { TS_entry classe = ts.pesquisa($1.sval);
+  if (classe == null) 
+    yyerror("classe >" + $1.sval + "< nao declarada");
+  TS_entry func = ts.pesquisa($3.sval);
+  if (func == null)
+    yyerror("funcao >" + $3.sval + "< nao declarada");
+}
+| NUM   { $$.obj = Tp_INT; }
+| TRUE  { $$.obj = Tp_BOOL; }
+| FALSE { $$.obj = Tp_BOOL; }
+| IDENT { TS_entry nodo = ts.pesquisa($1.sval);
+  if (nodo == null ) 
+    yyerror("(sem) Nome de tipo <" + $1.sval + "> nao declarado ");
+  else 
+    $$.obj = nodo;
+}
 | THIS
-| NEW INT '[' Expression ']'                                { if ((TS_entry)$4 != Tp_INT) 
-                                                                yyerror("posicao do array deve ser um inteiro "+((TS_entry)$1).getTipo());
-                                                            }
-| NEW IDENT '(' ')'                                         {  TS_entry nodo = ts.pesquisa($2);
-                                                              if (nodo != null) 
-                                                                yyerror("variavel >" + $2 + "< jah declarada");
-                                                              else ts.insert(new TS_entry($2, (TS_entry)$1, currClass)); 
-                                                            }
-| '!' Expression                                            { $$ = Tp_BOOLEAN; }
-| '(' Expression ')'                                        { $$ = $2; }
+| NEW INT '[' Expression ']'  { if ((TS_entry)$4.obj != Tp_INT) 
+    yyerror("posicao do array deve ser um inteiro "+((TS_entry)$1.obj).getTipo());
+}
+| NEW IDENT '(' ')' {  TS_entry nodo = ts.pesquisa($2.sval);
+  if (nodo != null) 
+    yyerror("variavel >" + $2.sval + "< jah declarada");
+  else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+}
+| '!' Expression { if ((TS_entry)$2.obj != Tp_BOOL)
+    yyerror("expressao deve ser booleana "+((TS_entry)$2.obj).getTipo());
+$$.obj = Tp_BOOL; 
+}
+| '(' Expression ')' { $$.obj = $2.obj; }
 ;
 
 ExpressionRepetition: ExpressionRepetition ',' Expression
@@ -184,7 +185,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
 
   public static TS_entry Tp_INT =  new TS_entry("int", null, ClasseID.TipoBase);
   public static TS_entry Tp_ARRAYINT = new TS_entry("int[]", null,  ClasseID.TipoBase);
-  public static TS_entry Tp_BOOLEAN = new TS_entry("bool", null,  ClasseID.TipoBase);
+  public static TS_entry Tp_BOOL = new TS_entry("bool", null,  ClasseID.TipoBase);
   public static TS_entry Tp_ERRO = new TS_entry("_erro_", null,  ClasseID.TipoBase);
   
   public static final int ATRIB = 1600;
@@ -223,7 +224,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
     ts.insert(Tp_ERRO);
     ts.insert(Tp_INT);
     ts.insert(Tp_ARRAYINT);
-    ts.insert(Tp_BOOLEAN);
+    ts.insert(Tp_BOOL);
     
 
   }  
