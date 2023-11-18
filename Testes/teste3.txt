@@ -1,13 +1,27 @@
 class A { 
     public static void main ( String [ ] args ) { 
-        int x;
-        int y;
         {
-            if ( x < y ) {
-                x = y;
+            if ( 1 < 2 ) {
+            
             } else {
-                y = x;
+            
             }
         } 
     } 
+ }
+
+ class B {
+    int z;
+    public int soma(int d)
+    int x;
+    int y;
+    {
+        if (true) {
+            
+        }
+        else {
+            
+        }
+        return x;
+    }
  }

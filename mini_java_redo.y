@@ -21,7 +21,7 @@ import java.io.*;
 
 %%
 
-Goal: MainClass ClassDeclarationRepetition
+Goal: {currClass = ClasseID.NomeStruct;} MainClass ClassDeclarationRepetition
 ;
 
 MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '{' Statement '}' '}' {  TS_entry nodo = ts.pesquisa($2.sval);
@@ -32,7 +32,7 @@ MainClass: CLASS IDENT '{'PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDENT ')' '
 ;
 
 ClassDeclarationRepetition: ClassDeclarationRepetition ClassDeclaration
-|
+| {currClass = ClasseID.NomeStruct;}
 ;
 
 ClassDeclaration: CLASS IDENT Extends '{' VarDeclarationRepetition MethodDeclarationRepetition '}'  { TS_entry nodo = ts.pesquisa($2.sval);
@@ -51,17 +51,18 @@ Extends: EXTENDS IDENT  {  TS_entry nodo = ts.pesquisa($2.sval);
 ;
 
 VarDeclarationRepetition: VarDeclarationRepetition VarDeclaration
-|
+| {currClass = ClasseID.VarLocal;}
 ;
 
 MethodDeclarationRepetition: MethodDeclarationRepetition MethodDeclaration
-|
+| {currClass = ClasseID.NomeParam;}
 ;
 
 VarDeclaration: Type IDENT ';'{  TS_entry nodo = ts.pesquisa($2.sval);
     if (nodo != null) 
       yyerror("variavel >" + $2.sval + "< jah declarada");
     else ts.insert(new TS_entry($2.sval, (TS_entry)$1.obj, currClass)); 
+    //System.out.println((TS_entry)$1.obj);
 }
 ;
 
@@ -73,7 +74,7 @@ MethodDeclaration: PUBLIC Type IDENT '(' DeclarationTypes ')' VarDeclarationRepe
 ;
 
 DeclarationTypes: DeclarationTypesRepetition
-|
+| {currClass = ClasseID.NomeParam;}
 ;
 
 DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entry nodo = ts.pesquisa($4.sval);
@@ -89,7 +90,7 @@ DeclarationTypesRepetition: DeclarationTypesRepetition ',' Type IDENT {  TS_entr
 ;
 
 StatementRepetition: StatementRepetition Statement
-|
+| {currClass = ClasseID.NomeFuncao;}
 ;
 
 Type: INT '[' ']' { $$.obj = Tp_ARRAYINT; }
