@@ -16,7 +16,7 @@
 
 
 
-//#line 2 "mini_java_redo.y"
+//#line 2 "mini_java.y"
 import java.io.*;
 //#line 19 "Parser.java"
 
@@ -407,7 +407,7 @@ final static String yyrule[] = {
 "ExpressionRepetition : Expression",
 };
 
-//#line 188 "mini_java_redo.y"
+//#line 188 "mini_java.y"
 
   private Yylex lexer;
 
@@ -492,10 +492,15 @@ final static String yyrule[] = {
 
    TS_entry validaTipo(int operador, TS_entry A, TS_entry B) {
         //System.out.println("Tipo 1: " + A + "\nTipo 2: " + B);
-       
+        while (A.getTipo() != null) {
+          A = A.getTipo();
+        }
+        while (B.getTipo() != null) {
+          B = B.getTipo();
+        }
          switch ( operador ) {
               case ATRIB:
-                    if ( A == B.getTipo() )
+                    if ( A == B )
                          return B;
                      else
                          yyerror("(sem) tipos incomp. para atribuicao: "+ A.getTipoStr() + " = "+B.getTipoStr());
@@ -529,7 +534,7 @@ final static String yyrule[] = {
                     break;
 
              case '<' :
-                     if ((A == Tp_INT && B == Tp_INT) || ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) || (A.getTipo() == B.getTipo()))
+                     if ((A == Tp_INT && B == Tp_INT) || ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) )
                          return Tp_BOOL;
                       else
                         yyerror("(sem) tipos incomp. para op relacional: "+ A.getTipoStr() + " < "+B.getTipoStr());
@@ -547,7 +552,7 @@ final static String yyrule[] = {
            
      }
 
-//#line 479 "Parser.java"
+//#line 484 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -702,11 +707,11 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 24 "mini_java_redo.y"
+//#line 24 "mini_java.y"
 {currClass = ClasseID.NomeStruct;}
 break;
 case 3:
-//#line 27 "mini_java_redo.y"
+//#line 27 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(15).sval);
    if (nodo != null) 
      yyerror("main class >" + val_peek(15).sval + "< jah declarada");
@@ -714,11 +719,11 @@ case 3:
 }
 break;
 case 5:
-//#line 35 "mini_java_redo.y"
+//#line 35 "mini_java.y"
 {currClass = ClasseID.NomeStruct;}
 break;
 case 6:
-//#line 38 "mini_java_redo.y"
+//#line 38 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(5).sval);
   if (nodo != null) 
     yyerror("classe >" + val_peek(5).sval + "< jah declarada");
@@ -726,7 +731,7 @@ case 6:
 }
 break;
 case 7:
-//#line 45 "mini_java_redo.y"
+//#line 45 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(0).sval);
     if (nodo == null) 
       yyerror("ident >" + val_peek(0).sval + "< nao declarado");
@@ -734,15 +739,15 @@ case 7:
 }
 break;
 case 10:
-//#line 54 "mini_java_redo.y"
+//#line 54 "mini_java.y"
 {currClass = ClasseID.VarLocal;}
 break;
 case 12:
-//#line 58 "mini_java_redo.y"
+//#line 58 "mini_java.y"
 {currClass = ClasseID.NomeParam;}
 break;
 case 13:
-//#line 61 "mini_java_redo.y"
+//#line 61 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(1).sval);
     if (nodo != null) 
       yyerror("variavel >" + val_peek(1).sval + "< jah declarada");
@@ -751,7 +756,7 @@ case 13:
 }
 break;
 case 14:
-//#line 69 "mini_java_redo.y"
+//#line 69 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(10).sval);
   if (nodo != null) 
     yyerror("metodo >" + val_peek(10).sval + "< jah declarado");
@@ -759,11 +764,11 @@ case 14:
 }
 break;
 case 16:
-//#line 77 "mini_java_redo.y"
+//#line 77 "mini_java.y"
 {currClass = ClasseID.NomeParam;}
 break;
 case 17:
-//#line 80 "mini_java_redo.y"
+//#line 80 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(0).sval);
     if (nodo != null) 
       yyerror("variavel >" + val_peek(0).sval + "< jah declarada");
@@ -771,7 +776,7 @@ case 17:
 }
 break;
 case 18:
-//#line 85 "mini_java_redo.y"
+//#line 85 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(0).sval);
   if (nodo != null) 
     yyerror("variavel >" + val_peek(0).sval + "< jah declarada");
@@ -779,23 +784,23 @@ case 18:
 }
 break;
 case 20:
-//#line 93 "mini_java_redo.y"
+//#line 93 "mini_java.y"
 {currClass = ClasseID.NomeFuncao;}
 break;
 case 21:
-//#line 96 "mini_java_redo.y"
+//#line 96 "mini_java.y"
 { yyval.obj = Tp_ARRAYINT; }
 break;
 case 22:
-//#line 97 "mini_java_redo.y"
+//#line 97 "mini_java.y"
 { yyval.obj = Tp_BOOL; }
 break;
 case 23:
-//#line 98 "mini_java_redo.y"
+//#line 98 "mini_java.y"
 { yyval.obj = Tp_INT; }
 break;
 case 24:
-//#line 99 "mini_java_redo.y"
+//#line 99 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(0).sval);
  if (nodo == null ) 
    yyerror("(sem) Nome de tipo <" + val_peek(0).sval + "> nao declarado ");
@@ -804,19 +809,19 @@ case 24:
 }
 break;
 case 26:
-//#line 108 "mini_java_redo.y"
+//#line 108 "mini_java.y"
 { if ( ((TS_entry)val_peek(4).obj) != Tp_BOOL) 
     yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)val_peek(4).obj).getTipo());
 }
 break;
 case 27:
-//#line 111 "mini_java_redo.y"
+//#line 111 "mini_java.y"
 { if ( ((TS_entry)val_peek(2).obj) != Tp_BOOL) 
     yyerror("(sem) expressao (while) deve ser logica "+((TS_entry)val_peek(2).obj).getTipo());
 }
 break;
 case 29:
-//#line 115 "mini_java_redo.y"
+//#line 115 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(3).sval);
 if (nodo == null) {
   yyerror("(sem) var <" + val_peek(3).sval + "> nao declarada");     
@@ -825,7 +830,7 @@ else
   yyval.obj = validaTipo(ATRIB, nodo.getTipo(), (TS_entry)val_peek(1).obj); }
 break;
 case 30:
-//#line 121 "mini_java_redo.y"
+//#line 121 "mini_java.y"
 { if ((TS_entry)val_peek(6).obj != Tp_ARRAYINT) 
     yyerror("expressao deve ser um array "+((TS_entry)val_peek(6).obj).getTipo());
   if ( ((TS_entry)val_peek(4).obj) != Tp_INT) 
@@ -834,27 +839,27 @@ case 30:
 }
 break;
 case 31:
-//#line 129 "mini_java_redo.y"
+//#line 129 "mini_java.y"
 { yyval.obj = validaTipo(AND, (TS_entry)val_peek(2).obj, (TS_entry)val_peek(0).obj); }
 break;
 case 32:
-//#line 130 "mini_java_redo.y"
+//#line 130 "mini_java.y"
 { yyval.obj = validaTipo('+', (TS_entry)val_peek(2).obj, (TS_entry)val_peek(0).obj); }
 break;
 case 33:
-//#line 131 "mini_java_redo.y"
+//#line 131 "mini_java.y"
 { yyval.obj = validaTipo('-', (TS_entry)val_peek(2).obj, (TS_entry)val_peek(0).obj); }
 break;
 case 34:
-//#line 132 "mini_java_redo.y"
+//#line 132 "mini_java.y"
 { yyval.obj = validaTipo('*', (TS_entry)val_peek(2).obj, (TS_entry)val_peek(0).obj); }
 break;
 case 35:
-//#line 133 "mini_java_redo.y"
+//#line 133 "mini_java.y"
 { yyval.obj = validaTipo('<', (TS_entry)val_peek(2).obj, (TS_entry)val_peek(0).obj); }
 break;
 case 36:
-//#line 134 "mini_java_redo.y"
+//#line 134 "mini_java.y"
 { if ((TS_entry)val_peek(3).obj != Tp_ARRAYINT) 
     yyerror("expressao deve ser um array "+((TS_entry)val_peek(3).obj).getTipo());
   if ( ((TS_entry)val_peek(1).obj) != Tp_INT) 
@@ -862,14 +867,14 @@ case 36:
 }
 break;
 case 37:
-//#line 139 "mini_java_redo.y"
+//#line 139 "mini_java.y"
 { if ((TS_entry)val_peek(2).obj != Tp_ARRAYINT) 
     yyerror("expressao deve ser um array "+((TS_entry)val_peek(2).obj).getTipo());
   yyval.obj = Tp_INT; 
 }
 break;
 case 38:
-//#line 143 "mini_java_redo.y"
+//#line 143 "mini_java.y"
 { TS_entry classe = ts.pesquisa(val_peek(4).sval);
   if (classe == null) 
     yyerror("classe >" + val_peek(4).sval + "< nao declarada");
@@ -879,7 +884,7 @@ case 38:
 }
 break;
 case 39:
-//#line 150 "mini_java_redo.y"
+//#line 150 "mini_java.y"
 { TS_entry classe = ts.pesquisa(val_peek(5).sval);
   if (classe == null) 
     yyerror("classe >" + val_peek(5).sval + "< nao declarada");
@@ -889,19 +894,19 @@ case 39:
 }
 break;
 case 40:
-//#line 157 "mini_java_redo.y"
+//#line 157 "mini_java.y"
 { yyval.obj = Tp_INT; }
 break;
 case 41:
-//#line 158 "mini_java_redo.y"
+//#line 158 "mini_java.y"
 { yyval.obj = Tp_BOOL; }
 break;
 case 42:
-//#line 159 "mini_java_redo.y"
+//#line 159 "mini_java.y"
 { yyval.obj = Tp_BOOL; }
 break;
 case 43:
-//#line 160 "mini_java_redo.y"
+//#line 160 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(0).sval);
   if (nodo == null ) 
     yyerror("(sem) Nome de tipo <" + val_peek(0).sval + "> nao declarado ");
@@ -911,13 +916,13 @@ case 43:
 }
 break;
 case 45:
-//#line 168 "mini_java_redo.y"
+//#line 168 "mini_java.y"
 { if ((TS_entry)val_peek(1).obj != Tp_INT) 
     yyerror("posicao do array deve ser um inteiro "+((TS_entry)val_peek(4).obj).getTipo());
 }
 break;
 case 46:
-//#line 171 "mini_java_redo.y"
+//#line 171 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(2).sval);
   if (nodo != null) 
     yyerror("variavel >" + val_peek(2).sval + "< jah declarada");
@@ -925,17 +930,17 @@ case 46:
 }
 break;
 case 47:
-//#line 176 "mini_java_redo.y"
+//#line 176 "mini_java.y"
 { if ((TS_entry)val_peek(0).obj != Tp_BOOL)
     yyerror("expressao deve ser booleana "+((TS_entry)val_peek(0).obj).getTipo());
 yyval.obj = Tp_BOOL; 
 }
 break;
 case 48:
-//#line 180 "mini_java_redo.y"
+//#line 180 "mini_java.y"
 { yyval.obj = val_peek(1).obj; }
 break;
-//#line 862 "Parser.java"
+//#line 867 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
