@@ -14,6 +14,7 @@ public class TS_entry
 
    // construtor para arrays
    public TS_entry(String umId, TS_entry umTipo, ClasseID umaClasse) {
+    //System.out.println("ID: "+umId+"|Tipo: "+umTipo+"|Classe: "+umaClasse+"\n\n");
       id = umId;
       tipo = umTipo;
       classe = umaClasse;

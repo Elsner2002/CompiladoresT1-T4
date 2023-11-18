@@ -37,7 +37,7 @@ public static int COMMENT = 279;
 public static int AND = 280;
 
   public int getLine() {
-      return yyline;
+      return yyline + 1;
   }
 
 %} 

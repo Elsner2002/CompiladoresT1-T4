@@ -109,10 +109,15 @@ Statement: '{' StatementRepetition '}'
     yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3.obj).getTipo());
 } 
 | WHILE '(' Expression ')' Statement  { if ( ((TS_entry)$3.obj) != Tp_BOOL) 
-    yyerror("(sem) expressao (if) deve ser logica "+((TS_entry)$3.obj).getTipo());
+    yyerror("(sem) expressao (while) deve ser logica "+((TS_entry)$3.obj).getTipo());
 }
 | PRINT '(' Expression ')' ';' 
-| IDENT '=' Expression ';'  { $$.obj = validaTipo(ATRIB, (TS_entry)$1.obj, (TS_entry)$3.obj);  } 
+| IDENT '=' Expression ';'  { TS_entry nodo = ts.pesquisa($1.sval);
+if (nodo == null) {
+  yyerror("(sem) var <" + $1.sval + "> nao declarada");     
+}           
+else
+  $$.obj = validaTipo(ATRIB, nodo.getTipo(), (TS_entry)$3.obj); } 
 | IDENT '[' Expression ']' '=' Expression ';' { if ((TS_entry)$1.obj != Tp_ARRAYINT) 
     yyerror("expressao deve ser um array "+((TS_entry)$1.obj).getTipo());
   if ( ((TS_entry)$3.obj) != Tp_INT) 
@@ -156,6 +161,7 @@ Expression: Expression AND Expression  { $$.obj = validaTipo(AND, (TS_entry)$1.o
   if (nodo == null ) 
     yyerror("(sem) Nome de tipo <" + $1.sval + "> nao declarado ");
   else 
+    //System.out.println("var: " + $1.sval + "\n Node: "+ nodo);
     $$.obj = nodo;
 }
 | THIS
@@ -262,11 +268,12 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
 
 
    TS_entry validaTipo(int operador, TS_entry A, TS_entry B) {
+        //System.out.println("Tipo 1: " + A + "\nTipo 2: " + B);
        
          switch ( operador ) {
               case ATRIB:
-                    if ( A == B )
-                         return A;
+                    if ( A == B.getTipo() )
+                         return B;
                      else
                          yyerror("(sem) tipos incomp. para atribuicao: "+ A.getTipoStr() + " = "+B.getTipoStr());
                     break;
@@ -274,7 +281,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
               case '+' :
                     if ( A == Tp_INT && B == Tp_INT)
                           return Tp_INT;
-                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                    else if ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
                          return Tp_ARRAYINT;     
                     else
                         yyerror("(sem) tipos incomp. para soma: "+ A.getTipoStr() + " + "+B.getTipoStr());
@@ -283,7 +290,7 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
               case '-' :
                     if ( A == Tp_INT && B == Tp_INT)
                           return Tp_INT;
-                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                    else if ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
                          return Tp_ARRAYINT;     
                     else
                         yyerror("(sem) tipos incomp. para subtracao: "+ A.getTipoStr() + " + "+B.getTipoStr());
@@ -292,17 +299,17 @@ ExpressionRepetition: ExpressionRepetition ',' Expression
               case '*' :
                     if ( A == Tp_INT && B == Tp_INT)
                           return Tp_INT;
-                    else if (A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
+                    else if ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) 
                          return Tp_ARRAYINT;     
                     else
                         yyerror("(sem) tipos incomp. para multiplicacao: "+ A.getTipoStr() + " + "+B.getTipoStr());
                     break;
 
              case '<' :
-                     if ((A == Tp_INT && B == Tp_INT) || (A == Tp_ARRAYINT && B == Tp_ARRAYINT))
+                     if ((A == Tp_INT && B == Tp_INT) || ( A == Tp_ARRAYINT && B == Tp_ARRAYINT) || (A.getTipo() == B.getTipo()))
                          return Tp_BOOL;
                       else
-                        yyerror("(sem) tipos incomp. para op relacional: "+ A.getTipoStr() + " > "+B.getTipoStr());
+                        yyerror("(sem) tipos incomp. para op relacional: "+ A.getTipoStr() + " < "+B.getTipoStr());
                       break;
 
              case AND:

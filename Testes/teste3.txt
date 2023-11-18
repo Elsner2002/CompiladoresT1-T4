@@ -16,11 +16,11 @@ class A {
     int x;
     int y;
     {
-        if (true) {
-            
+        if (x < y) {
+            x = y;
         }
         else {
-            
+            System.out.println(x);
         }
         return x;
     }

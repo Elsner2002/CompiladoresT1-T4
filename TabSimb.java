@@ -12,6 +12,7 @@ public class TabSimb
     }
     
      public void insert( TS_entry nodo ) {
+      //System.out.println(nodo+"\n\n");
       lista.add(nodo);
     }    
     
