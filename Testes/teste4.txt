@@ -1,0 +1,27 @@
+class A { 
+    public static void main ( String [ ] args ) { 
+        {
+            if ( 1 < 2 ) {
+            
+            } else {
+            
+            }
+        } 
+    } 
+ }
+
+ class B {
+    int z;
+    public int soma(int d)
+    int x;
+    int y;
+    {
+        if (x < y) {
+            x = y;
+        }
+        else {
+            System.out.println(x);
+        }
+        return x;
+    }
+ }
