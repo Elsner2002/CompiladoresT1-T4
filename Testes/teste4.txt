@@ -10,17 +10,22 @@ class A {
     } 
  }
 
- class B {
+class B {
+    int i1;
+    boolean b1;
+}
+
+ class C {
     int z;
     public int soma(int d)
     int x;
     int y;
     {
         if (x < y) {
-            x = y;
+            x = B.i1();
         }
         else {
-            System.out.println(x);
+            System.out.println(B.b1());
         }
         return x;
     }

@@ -146,7 +146,7 @@ Expression: Expression AND Expression  { $$.obj = validaTipo(AND, (TS_entry)$1.o
   TS_entry func = ts.pesquisa($3.sval);
   if (func == null)
     yyerror("funcao >" + $3.sval + "< nao declarada");
-  $$.obj = $3.obj;
+  $$.obj = func;
 }
 | IDENT '.' IDENT '(' ExpressionRepetition ')'  { TS_entry classe = ts.pesquisa($1.sval);
   if (classe == null) 
@@ -154,7 +154,7 @@ Expression: Expression AND Expression  { $$.obj = validaTipo(AND, (TS_entry)$1.o
   TS_entry func = ts.pesquisa($3.sval);
   if (func == null)
     yyerror("funcao >" + $3.sval + "< nao declarada");
-  $$.obj = $3.obj;
+  $$.obj = func;
 }
 | NUM   { $$.obj = Tp_INT; }
 | TRUE  { $$.obj = Tp_BOOL; }

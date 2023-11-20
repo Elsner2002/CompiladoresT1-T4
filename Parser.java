@@ -407,7 +407,7 @@ final static String yyrule[] = {
 "ExpressionRepetition : Expression",
 };
 
-//#line 190 "mini_java.y"
+//#line 191 "mini_java.y"
 
   private Yylex lexer;
 
@@ -881,11 +881,12 @@ case 38:
   TS_entry func = ts.pesquisa(val_peek(2).sval);
   if (func == null)
     yyerror("funcao >" + val_peek(2).sval + "< nao declarada");
-  yyval.obj = val_peek(2).obj;
+  System.out.println(func);
+  yyval.obj = func;
 }
 break;
 case 39:
-//#line 151 "mini_java.y"
+//#line 152 "mini_java.y"
 { TS_entry classe = ts.pesquisa(val_peek(5).sval);
   if (classe == null) 
     yyerror("classe >" + val_peek(5).sval + "< nao declarada");
@@ -896,19 +897,19 @@ case 39:
 }
 break;
 case 40:
-//#line 159 "mini_java.y"
+//#line 160 "mini_java.y"
 { yyval.obj = Tp_INT; }
 break;
 case 41:
-//#line 160 "mini_java.y"
-{ yyval.obj = Tp_BOOL; }
-break;
-case 42:
 //#line 161 "mini_java.y"
 { yyval.obj = Tp_BOOL; }
 break;
-case 43:
+case 42:
 //#line 162 "mini_java.y"
+{ yyval.obj = Tp_BOOL; }
+break;
+case 43:
+//#line 163 "mini_java.y"
 { TS_entry nodo = ts.pesquisa(val_peek(0).sval);
   if (nodo == null ) 
     yyerror("(sem) Nome de tipo <" + val_peek(0).sval + "> nao declarado ");
@@ -918,13 +919,13 @@ case 43:
 }
 break;
 case 45:
-//#line 170 "mini_java.y"
+//#line 171 "mini_java.y"
 { if ((TS_entry)val_peek(1).obj != Tp_INT) 
     yyerror("posicao do array deve ser um inteiro "+((TS_entry)val_peek(4).obj).getTipo());
 }
 break;
 case 46:
-//#line 173 "mini_java.y"
+//#line 174 "mini_java.y"
 {  TS_entry nodo = ts.pesquisa(val_peek(2).sval);
   if (nodo != null) 
     yyerror("variavel >" + val_peek(2).sval + "< jah declarada");
@@ -932,17 +933,17 @@ case 46:
 }
 break;
 case 47:
-//#line 178 "mini_java.y"
+//#line 179 "mini_java.y"
 { if ((TS_entry)val_peek(0).obj != Tp_BOOL)
     yyerror("expressao deve ser booleana "+((TS_entry)val_peek(0).obj).getTipo());
 yyval.obj = Tp_BOOL; 
 }
 break;
 case 48:
-//#line 182 "mini_java.y"
+//#line 183 "mini_java.y"
 { yyval.obj = val_peek(1).obj; }
 break;
-//#line 869 "Parser.java"
+//#line 870 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
